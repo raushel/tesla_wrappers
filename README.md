@@ -21,10 +21,15 @@ Stitch Sentry Mode / Saved footage together:
 Pi Zero W: TeslaUSB - jspv branch
 - https://github.com/jspv/teslausb
 - Modified .conf for unattended setup
+- Pi Zero W Starter Kit: https://smile.amazon.com/gp/product/B0748MPQT4
+- Short Micro USB: https://smile.amazon.com/gp/product/B01NAMTC5T
+- Samsung Pro Endurance 128GB: https://smile.amazon.com/gp/product/B07B984HJ5
+- Onvian USB Splitter (x2): https://smile.amazon.com/gp/product/B01KX4TKH6
 
 Modified Yogo's BlackVue Downloader:
 - https://dashcamtalk.com/forum/threads/blackvue-network-file-downloader-updated-07-06.29728/
 - Added logging and made headless
+- BlackVue DR-900s-2CH
 
 BlackVue PIP:
 - https://dashcamtalk.com/forum/threads/batch-file-to-use-ffmpeg-to-generate-single-pip-video-from-front-read.32570/
