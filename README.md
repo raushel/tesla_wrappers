@@ -3,6 +3,10 @@ Wrappers for various Tesla / Blackvue Automations using Windows, PowerShell, and
 
 Dependencies / Modified Sources
 
+Windows CIFS Network Share
+Local DNS registration for BlackVue / Teslausb
+Windows Task Scheduler
+
 Python 37:
 - https://www.python.org/downloads/release/python-370/
 
