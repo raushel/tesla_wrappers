@@ -3,9 +3,9 @@ Wrappers for various Tesla / Blackvue Automations using Windows, PowerShell, and
 
 Dependencies / Modified Sources
 
-Windows CIFS Network Share
-Local DNS registration for BlackVue / Teslausb
-Windows Task Scheduler
+- Windows CIFS Network Share
+- Local DNS registration for BlackVue / Teslausb
+- Windows Task Scheduler
 
 Python 37:
 - https://www.python.org/downloads/release/python-370/
@@ -24,6 +24,8 @@ Stitch Sentry Mode / Saved footage together:
 
 Pi Zero W: TeslaUSB - jspv branch
 - https://github.com/jspv/teslausb
+- balenaEtcher: https://www.balena.io/etcher/
+- latest teslausb boot image flashed via balenaEtcher: https://github.com/rtgoodwin/teslausb/releases
 - Modified .conf for unattended setup
 - Pi Zero W Starter Kit: https://smile.amazon.com/gp/product/B0748MPQT4
 - Short Micro USB: https://smile.amazon.com/gp/product/B01NAMTC5T
