@@ -24,6 +24,7 @@ Functions for logging in CMTrace format:
 
 Stitch Sentry Mode / Saved footage together:
 - https://github.com/ehendrix23/tesla_dashcam
+- Note: Unable to run 0.1.9 via Python/pip on Windows, forcing 0.1.8 for now
 
 Pi Zero W: TeslaUSB - jspv branch
 - https://github.com/jspv/teslausb
