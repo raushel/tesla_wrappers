@@ -49,9 +49,9 @@ function GetScriptDirectory
 
 $VerboseLogging = "true"
 [bool]$Global:Verbose = [System.Convert]::ToBoolean($VerboseLogging)
-$Global:LogFile = Join-Path (GetScriptDirectory) 'TeslaCam.log' 
+$Global:LogFile = Join-Path (GetScriptDirectory) 'StitchTeslaCam.log' 
 $Global:MaxLogSizeInKB = 5120
-$Global:ScriptName = 'Stitched.ps1'
+$Global:ScriptName = 'StitchTeslaCam.ps1'
 $Global:ScriptStatus = 'Success'
 $Global:hostname = 'teslausb'
 $Global:path = 'C:\ServerFolders\Pictures\TeslaCam\'
