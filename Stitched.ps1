@@ -1,4 +1,4 @@
-
+$ErrorActionPreference = "Stop"
 #Logging
 function LogIt
 {
@@ -51,13 +51,15 @@ $VerboseLogging = "true"
 [bool]$Global:Verbose = [System.Convert]::ToBoolean($VerboseLogging)
 $Global:LogFile = Join-Path (GetScriptDirectory) 'TeslaCam.log' 
 $Global:MaxLogSizeInKB = 5120
-$Global:ScriptName = 'Stitch.ps1'
+$Global:ScriptName = 'Stitched.ps1'
 $Global:ScriptStatus = 'Success'
 $Global:hostname = 'teslausb'
 $Global:path = 'C:\ServerFolders\Pictures\TeslaCam\'
 $Global:outputFolder = 'Stitched'
 
-pip install tesla_dashcam --upgrade
+C:\Python37\python.exe -m pip install --upgrade pip
+pip install tesla_dashcam==0.1.8
+#pip install tesla_dashcam --upgrade
 
 if(!(Test-Connection $hostname -quiet))
 {
@@ -75,7 +77,12 @@ if(!(Test-Connection $hostname -quiet))
         #write-host "Starting: " $folder.fullname
         $output = $path + $outputFolder + '\' + $folder.name
 
-        tesla_dashcam $folder.fullname --quality HIGH --layout WIDESCREEN --encoding x265 --timestamp --output $output
+        #0.1.8
+        tesla_dashcam $folder.fullname --quality HIGH --layout WIDESCREEN --encoding x265 --output $output --timestamp
+        #0.1.9
+        #tesla_dashcam $folder.fullname --quality HIGH --layout WIDESCREEN --encoding x265 --output $output --timestamp --delete_source true --complression veryslow
+        
+        #0.1.8 only
         #Write-Host "Cleaning up " $folderpath
         LogIt -message ("Deleting:  $fold") -component "Remove-Item" -type 1 
         Remove-Item -Recurse -Force $folder.fullname
