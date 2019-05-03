@@ -8,8 +8,7 @@ Dependencies / Modified Sources
 
 - Windows CIFS Network Share
 - Local DNS registration for BlackVue / Teslausb
-- Windows Task Scheduler
- - https://github.com/raushel/tesla_wrappers/blob/master/StitchTeslaCam.xml
+- Windows Task Scheduler: https://github.com/raushel/tesla_wrappers/blob/master/StitchTeslaCam.xml
 
 Python 37:
 - https://www.python.org/downloads/release/python-370/
