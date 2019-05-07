@@ -1,156 +1,11 @@
-﻿#                   __   __ ___    ____   ___    _   ____                   
-#                   \ \ / // _ \  / ___| / _ \  ( ) / ___|                  
-#                    \ V /| | | || |  _ | | | | |/  \___ \                  
-#                     | | | |_| || |_| || |_| |      ___) |                 
-#                     |_|  \___/  \____| \___/      |____/                  
-#           ____   _         _     ____  _  ____     __ _   _  _____        
-#          | __ ) | |       / \   / ___|| |/ /\ \   / /| | | || ____|       
-#          |  _ \ | |      / _ \ | |    | ' /  \ \ / / | | | ||  _|         
-#          | |_) || |___  / ___ \| |___ | . \   \ V /  | |_| || |___        
-#          |____/ |_____|/_/   \_\\____||_|\_\   \_/    \___/ |_____|       
-#  ____    ___ __        __ _   _  _      ___     _     ____   _____  ____  
-# |  _ \  / _ \\ \      / /| \ | || |    / _ \   / \   |  _ \ | ____||  _ \ 
-# | | | || | | |\ \ /\ / / |  \| || |   | | | | / _ \  | | | ||  _|  | |_) |
-# | |_| || |_| | \ V  V /  | |\  || |___| |_| |/ ___ \ | |_| || |___ |  _ < 
-# |____/  \___/   \_/\_/   |_| \_||_____|\___//_/   \_\|____/ |_____||_| \_\
-#
-##############################################################################
-
-
-#           CURRENTLY IN TESTING - YOU MAY GET UNEXPECTED RESULTS!
-
-
-
-#    THE COMBINATION OF THE BELOW TEXT WILL TELL THE SCRIPT WHERE YOU WANT TO PUT YOUR VIDEO FILES
-
-
-
-#    YOU WILL NEED TO PRE-CREATE THE FOLDERS FOR IT, FOR EXAMPLE, THE FIRST ENTRY BELOW WILL PUT VIDEO FILES INTO C:\Dashcams\Car1-Folder
-
-
-
-#    THIS IS VERIFIED TO WORK WITH THE BLACKVUE DR650S-2CH, THIS IS THE ONLY ONE I HAVE TO WORK WITH, SO I'M NOT SURE HOW IT WILL BEHAVE IF YOU HAVE SOMETHING DIFFERENT, CHECK THE FORUM TO SEE OTHER COMPATIBLE CAMERAS
-
-
-
-#    AS A PRECAUTION (FOR ME) YOU ASSUME ALL LIABILITY FOR ANY LOSS, AND IN NO WAY WILL HOLD ME RESPONSIBLE FOR ANY BAD STUFF THAT HAPPENS...
-
-
-
-#    YOU NEED TO HAVE THE DASHCAM CONNECTED TO THE SAME NETWORK AS THE COMPUTER YOU ARE RUNNING THIS SCRIPT ON
-
-
-
-
-
-
-
-
-###############################
-### SET YOUR VARIABLES HERE ###
-###############################
-   
-$script:DCROOT_DRIVE = "P:"					#ENTER THE DRIVE LETTER FOLLOWED BY A COLON WHERE YOU WISH TO STORE THE VIDEO FILES
-$script:DCROOT_FOLDER = "ServerFolders\Pictures\BlackVue"			#ENTER THE FOLDER NAME (NO SLASHES) OF THE FOLDER IN WHICH THE VIDEO FILES WILL BE STORED
-
-###########################################################################################################
-
-$script:DC_CAR1 = "CAR1-NAME"				#ENTER A COMMON NAME FOR THE CAR WITH THIS DASHCAM HERE
-$script:DC_IP_1 = "0"				#ENTER THE IP ADDRESS OF THE DASHCAM HERE
-$script:IP_1_PATH = "Record"			#ENTER THE FOLDER NAME WHER THE VIDEO FILES WILL BE STORED
-
-###########################################################################################################
-
-$script:DC_CAR2 = "CAR2-NAME"				#ENTER A COMMON NAME FOR THE CAR WITH THIS DASHCAM HERE
-$script:DC_IP_2 = "0"				#ENTER THE IP ADDRESS OF THE DASHCAM HERE
-$script:IP_2_Path = "CAR2-FOLDER"			#ENTER THE FOLDER NAME WHER THE VIDEO FILES WILL BE STORED
-
-###########################################################################################################
-
-$script:DC_CAR3 = "CAR3-NAME"				#ENTER A COMMON NAME FOR THE CAR WITH THIS DASHCAM HERE
-$script:DC_IP_3 = "0"				#ENTER THE IP ADDRESS OF THE DASHCAM HERE
-$script:IP_3_Path = "CAR3-FOLDER"			#ENTER THE FOLDER NAME WHER THE VIDEO FILES WILL BE STORED
-
-###########################################################################################################
-
-$script:DC_CAR4 = "CAR4-NAME"				#ENTER A COMMON NAME FOR THE CAR WITH THIS DASHCAM HERE
-$script:DC_IP_4 = "0"				#ENTER THE IP ADDRESS OF THE DASHCAM HERE
-$script:IP_4_Path = "CAR4-NAME"				#ENTER THE FOLDER NAME WHER THE VIDEO FILES WILL BE STORED
-
-###########################################################################################################
-
-$script:DC_CAR5 = "CAR5-NAME"				#ENTER A COMMON NAME FOR THE CAR WITH THIS DASHCAM HERE
-$script:DC_IP_5 = "0"				#ENTER THE IP ADDRESS OF THE DASHCAM HERE
-$script:IP_5_Path = "CAR5-FOLDER"			#ENTER THE FOLDER NAME WHER THE VIDEO FILES WILL BE STORED
-
-
-function LogIt
-{
-  param (
-  [Parameter(Mandatory=$true)]
-  $message,
-  [Parameter(Mandatory=$true)]
-  $component,
-  [Parameter(Mandatory=$true)]
-  $type )
-
-  switch ($type)
-  {
-    1 { $type = "Info" }
-    2 { $type = "Warning" }
-    3 { $type = "Error" }
-    4 { $type = "Verbose" }
-  }
-
-  if (($type -eq "Verbose") -and ($Global:Verbose))
-  {
-    $toLog = "{0} `$$<{1}><{2} {3}><thread={4}>" -f ($type + ":" + $message), ($Global:ScriptName + ":" + $component), (Get-Date -Format "MM-dd-yyyy"), (Get-Date -Format "HH:mm:ss.ffffff"), $pid
-    $toLog | Out-File -Append -Encoding UTF8 -FilePath ("filesystem::{0}" -f $Global:LogFile)
-    Write-Host $message
-  }
-  elseif ($type -ne "Verbose")
-  {
-    $toLog = "{0} `$$<{1}><{2} {3}><thread={4}>" -f ($type + ":" + $message), ($Global:ScriptName + ":" + $component), (Get-Date -Format "MM-dd-yyyy"), (Get-Date -Format "HH:mm:ss.ffffff"), $pid
-    $toLog | Out-File -Append -Encoding UTF8 -FilePath ("filesystem::{0}" -f $Global:LogFile)
-    Write-Host $message
-  }
-  if (($type -eq 'Warning') -and ($Global:ScriptStatus -ne 'Error')) { $Global:ScriptStatus = $type }
-  if ($type -eq 'Error') { $Global:ScriptStatus = $type }
-
-  if ((Get-Item $Global:LogFile).Length/1KB -gt $Global:MaxLogSizeInKB)
-  {
-    $log = $Global:LogFile
-    Remove-Item ($log.Replace(".log", ".lo_"))
-    Rename-Item $Global:LogFile ($log.Replace(".log", ".lo_")) -Force
-  }
-} 
-
-function GetScriptDirectory
-{
-  $invocation = (Get-Variable MyInvocation -Scope 1).Value
-  Split-Path $invocation.MyCommand.Path
-} 
-
+﻿
 $VerboseLogging = "true"
 [bool]$Global:Verbose = [System.Convert]::ToBoolean($VerboseLogging)
-$Global:LogFile = Join-Path (GetScriptDirectory) 'BlackVue.log' 
-$Global:MaxLogSizeInKB = 5120
-$Global:ScriptName = 'BlackVueDownloader.ps1'
-$Global:ScriptStatus = 'Success'
+. $PSScriptRoot\VarLibrary.ps1
+. $PSScriptRoot\CMTraceLogger.ps1
 
-
-
-
-
-
-#####################################################################################
-#########    D O   N O T   E D I T   A N Y T H I N G   B E L O W   T H I S   ########
-#####################################################################################
-
-
-
-
-
+$Global:LogFile = $PSScriptRoot.ToString() + '\' + ($MyInvocation.MyCommand.Name).Replace('.ps1','.log')
+$Global:ScriptName = $MyInvocation.MyCommand.ToString()
 
 function set_arrays
 {
@@ -185,7 +40,6 @@ $Script:Car5 = [PSCustomObject]@{
     }
 }
 
-
 function intro
 {
 $host.ui.RawUI.WindowTitle = "YOGO'S BLACKVUE DOWNLOADER v0.4"
@@ -199,11 +53,8 @@ write-output "`n"
 write-output "`n"
 }
 
-
 function check_paths
 {
-
-
 $carpaths = New-Object System.Collections.Generic.List[System.Object]
 if ($Car1.IP -ne 0){$carpaths.add($Car1.Carpath)}
 if ($Car2.IP -ne 0){$carpaths.add($Car2.Carpath)}
@@ -240,7 +91,6 @@ if (test-path $DCROOT_DRIVE\$DCROOT_FOLDER\$Checkpath\)
     }
 }
 
-
 function Cam_Choice
 {
 $IPList_temp = ($Car1.IP,$Car2.IP,$Car3.IP,$Car4.IP,$Car5.IP)
@@ -265,11 +115,7 @@ $Results = foreach ($IP in $IPList)
     $TempObject
     }
 
-
-
 $OnlineIPList = ($Results | Where-Object {$_.Status -eq 'Online'}).IP
-
-
 
 $MidDot = [char]183
 $Choice = ''
@@ -341,7 +187,6 @@ while ($Choice -eq '')
             {$Choice}
         }
 
-
     if ($TargetList.Count -gt 0)
         {
         Clear-Host
@@ -355,17 +200,9 @@ while ($Choice -eq '')
         }
     }
 
-
-
-
-
 # restore previous VerbosePref
 $VerbosePreference = $Old_VPref
-
-
-
 }
-
 
 function Process_Files
 {
@@ -379,9 +216,6 @@ IF ($IP_TARGET -EQ $CAR2.IP) {$SCRIPT:CARTARGET = $CAR2}
 IF ($IP_TARGET -EQ $CAR3.IP) {$SCRIPT:CARTARGET = $CAR3}
 IF ($IP_TARGET -EQ $CAR4.IP) {$SCRIPT:CARTARGET = $CAR4}
 IF ($IP_TARGET -EQ $CAR5.IP) {$SCRIPT:CARTARGET = $CAR5}
-
-
-
 
 $SCRIPT:CARPATH = $CARTARGET.CARPATH
 $SCRIPT:DC_IP = $CARTARGET.IP
@@ -405,7 +239,6 @@ if (test-path $DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\file.list) {
 }
 write-output "`n"
 
-
 $SCRIPT:FILE_LIST1 = (Get-Content $DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\file.list) -notmatch "v:" -split "`r`n"
 DEL $DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\file.list
 $SCRIPT:FILE_COUNT = $FILE_LIST1 | MEASURE |SELECT-OBJECT -EXPANDPROPERTY COUNT
@@ -419,10 +252,7 @@ $SCRIPT:MANUAL_COUNT= [math]::round( ($MANUAL_COUNT / 2) , [system.midpointround
 $SCRIPT:NORMAL_COUNT = ($FILE_LIST1 | WHERE-OBJECT {$_ -LIKE "*_N*.MP4*"} | MEASURE |SELECT-OBJECT -EXPANDPROPERTY COUNT)
 $SCRIPT:NORMAL_COUNT= [math]::round( ($NORMAL_COUNT / 2) , [system.midpointrounding]::AwayFromZero )
 
-
-
 $SCRIPT:FILE_LIST2 = $FILE_LIST1 | % { if ($_) { $_.trimstart('n:/Record/').split(',')[0] }}
-
 
 $FILE_LIST3 = New-Object System.Collections.Generic.List[System.Object]
 $SCRIPT:FILE_LIST_EVENT = New-Object System.Collections.Generic.List[System.Object]
@@ -437,14 +267,11 @@ $SCRIPT:FILE_LIST_NORMAL_TMP = New-Object System.Collections.Generic.List[System
 $SCRIPT:FILE_LIST_MANUAL_TMP = New-Object System.Collections.Generic.List[System.Object]
 $SCRIPT:FILE_LIST_ALL_TMP = New-Object System.Collections.Generic.List[System.Object]
 
-
-
 FOREACH ($LISTING IN $FILE_LIST2) {IF ( test-path "$DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\$LISTING" ) {
     }else{ 
           $FILE_LIST3.ADD("$LISTING")
          }
     }
-
 
 $SCRIPT:PARK_COUNT_NEW = ($FILE_LIST3 | WHERE-OBJECT  {$_ -LIKE "*_P*.MP4"} | MEASURE |SELECT-OBJECT -EXPANDPROPERTY COUNT)
 $SCRIPT:PARK_COUNT_NEW = [math]::round( ($PARK_COUNT_NEW / 2) , [system.midpointrounding]::AwayFromZero )
@@ -455,10 +282,6 @@ $SCRIPT:MANUAL_COUNT_NEW= [math]::round( ($MANUAL_COUNT_NEW / 2) , [system.midpo
 $SCRIPT:NORMAL_COUNT_NEW = ($FILE_LIST3 | WHERE-OBJECT {$_ -LIKE "*_N*.MP4"} | MEASURE |SELECT-OBJECT -EXPANDPROPERTY COUNT)
 $SCRIPT:NORMAL_COUNT_NEW = [math]::round( ($NORMAL_COUNT_NEW / 2) , [system.midpointrounding]::AwayFromZero )
 $SCRIPT:VID_COUNT_NEW = ($SCRIPT:NORMAL_COUNT_NEW + $SCRIPT:MANUAL_COUNT_NEW + $SCRIPT:EVENT_COUNT_NEW + $SCRIPT:PARK_COUNT_NEW)
-
-
-
-
 
 FOREACH ($ENTRY IN $FILE_LIST3) {IF ($ENTRY -LIKE "*_E*.mp4") {
     $ENTRY = $ENTRY.trimend("F.mp4")
@@ -471,10 +294,6 @@ $FILE_LIST_EVENT = $FILE_LIST_EVENT_TMP|
     Sort-Object |
     Get-Unique
 
-
-
-
-
 FOREACH ($ENTRY IN $FILE_LIST3) {IF ($ENTRY -LIKE "*_P*.mp4") {
     $ENTRY = $ENTRY.trimend("F.mp4")
     $ENTRY = $ENTRY.trimend("R.mp4")
@@ -485,11 +304,6 @@ FOREACH ($ENTRY IN $FILE_LIST3) {IF ($ENTRY -LIKE "*_P*.mp4") {
 $FILE_LIST_PARK = $FILE_LIST_PARK_TMP|
     Sort-Object |
     Get-Unique
-
-
-
-
-
 
 FOREACH ($ENTRY IN $FILE_LIST3) {IF ($ENTRY -LIKE "*_N*.mp4") {
     $ENTRY = $ENTRY.trimend("F.mp4")
@@ -502,11 +316,6 @@ $FILE_LIST_NORMAL = $FILE_LIST_NORMAL_TMP|
     Sort-Object |
     Get-Unique
 
-
-
-
-
-
 FOREACH ($ENTRY IN $FILE_LIST3) {IF ($ENTRY -LIKE "*_M*.mp4") {
     $ENTRY = $ENTRY.trimend("F.mp4")
     $ENTRY = $ENTRY.trimend("R.mp4")
@@ -517,10 +326,6 @@ FOREACH ($ENTRY IN $FILE_LIST3) {IF ($ENTRY -LIKE "*_M*.mp4") {
 $FILE_LIST_MANUAL = $FILE_LIST_MANUAL_TMP|
     Sort-Object |
     Get-Unique
-
-
-
-
 
 FOREACH ($ENTRY IN $FILE_LIST3) {IF (1 -EQ 1) {
     $ENTRY = $ENTRY.trimend("F.mp4")
