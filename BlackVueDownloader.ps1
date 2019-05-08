@@ -40,6 +40,16 @@ $Script:Car5 = [PSCustomObject]@{
     }
 }
 
+#Set the Created/Modified Date based on the filedate rather than copied date
+function timestamp ($path, $filename)
+{
+    $file = Get-Item "$path"
+    $dateTimeName = $filename.insert(4,'-').insert(7,'-').insert(13,':').insert(16,':')
+    $datetime = [datetime]$dateTimeName.substring(0,10) + [TimeSpan]$dateTimeName.substring(11,8).replace('-',':')
+
+    $file.LastWriteTime = $datetime
+    $file.CreationTime = $datetime
+}
 function intro
 {
 $host.ui.RawUI.WindowTitle = "YOGO'S BLACKVUE DOWNLOADER v0.4"
@@ -521,6 +531,8 @@ $DEST = "$DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\$VIDNAME"
     LogIt -message ("Getting video $VIDNAME | $FILENUM_PROGRESS of $VID_COUNT") -component "Download_Vids()" -type 2 
     LogIt -message ("Retrieving video files from camera: $FILENUM_PERCENTAGE%") -component "Download_Vids()" -type 1 
     
+    timestamp -path $DEST -filename $VIDNAME
+
 $VIDNAME = $DATA + 'R.mp4'
 Write-Output $VIDNAME
 $DEST = "$DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\$VIDNAME"
@@ -534,7 +546,9 @@ $DEST = "$DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\$VIDNAME"
     Write-Output -ID ($ACTIVITY_ID+1) -Activity "Getting video $FILENUM_PROGRESS of $VID_COUNT" -CurrentOperation "Retrieving video files from camera: $FILENUM_PERCENTAGE%"
     LogIt -message ("Getting video $VIDNAME | $FILENUM_PROGRESS of $VID_COUNT") -component "Download_Vids()" -type 2
     LogIt -message ("Retrieving video files from camera: $FILENUM_PERCENTAGE%") -component "Download_Vids()" -type 1 
-    
+
+    timestamp -path $DEST -filename $VIDNAME
+
 $VIDNAME = $DATA + '.gps'
 Write-Output $VIDNAME
 $DEST = "$DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\$VIDNAME"
@@ -550,6 +564,7 @@ $DEST = "$DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\$VIDNAME"
     LogIt -message ("Retrieving video files from camera: $FILENUM_PERCENTAGE%") -component "Download_Vids()" -type 1 
     
 Start-Sleep -m 100
+timestamp -path $DEST -filename $VIDNAME
 
 $VIDNAME = $DATA + '.3gf'
 Write-Output $VIDNAME 
@@ -566,6 +581,7 @@ $DEST = "$DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\$VIDNAME"
     LogIt -message ("Retrieving video files from camera: $FILENUM_PERCENTAGE%") -component "Download_Vids()" -type 1 
     
 Start-Sleep -m 250
+timestamp -path $DEST -filename $VIDNAME
 
 Write-Output -ID ($ACTIVITY_ID+1) -Activity "Getting video $FILENUM_PROGRESS of $VID_COUNT"  -Completed
 LogIt -message ("Getting video $FILENUM_PROGRESS of $VID_COUNT Completed") -component "Download_Vids()" -type 1 
