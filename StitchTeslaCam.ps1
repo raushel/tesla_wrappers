@@ -33,19 +33,19 @@ if(!(Test-Connection $hostname -quiet))
         
         #Set the Created/Modified Date based on the filedate rather than copied date
         $file = Get-Item "$output.mp4"
-        $datetime = [datetime]$output.substring(0,10) + [TimeSpan]$output.substring(11,8).replace('-',':')
+        $datetime = [datetime]$folder.name.substring(0,10) + [TimeSpan]$folder.name.substring(11,8).replace('-',':')
 
         $file.LastWriteTime = $datetime
         $file.CreationTime = $datetime
     
         #0.1.8 only
-        if(Test-Path $Output)
+        if(Test-Path "$output.mp4")
         {
             LogIt -message ("Deleting:  $fold") -component "Remove-Item" -type 1 
             Remove-Item -Recurse -Force $folder.fullname
         }
         else {
-            LogIt -message ("Error:  $fold not deleted, $Output.mp4 not created") -component "Remove-Item" -type 3 
+            LogIt -message ("Error:  $fold not deleted, $output.mp4 not created") -component "Remove-Item" -type 3 
         }
     }
     LogIt -message ("Completed Run") -component "Complete" -type 1 
