@@ -37,7 +37,6 @@ if((Test-Connection $hostname -quiet))
     
         if(Test-Path "$output.mp4")
         {
-
             #Set the Created/Modified Date based on the filedate rather than copied date
             $file = Get-Item "$output.mp4"
             $datetime = [datetime]$folder.name.substring(0,10) + [TimeSpan]$folder.name.substring(11,8).replace('-',':')
