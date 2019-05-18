@@ -11,7 +11,7 @@ $Global:ScriptName = $MyInvocation.MyCommand.ToString()
 #pip install tesla_dashcam==0.1.8
 #pip install tesla_dashcam --upgrade
 
-if((Test-Connection $hostname -quiet))
+if(!(Test-Connection $hostname -quiet))
 {
     LogIt -message ("$hostname is offline, starting run") -component "Test-Connection" -type 1 
     $dir = get-childitem -path $path -Recurse -Directory -Force -ErrorAction SilentlyContinue  | Where-Object {$_.Name -ne $outputFolder} | Select-Object Name,FullName
