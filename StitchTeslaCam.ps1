@@ -27,9 +27,9 @@ if(!(Test-Connection $hostname -quiet))
         $output = $path + $outputFolder + '\' + $folder.name
 
         #0.1.8
-        #$result = tesla_dashcam $folder.fullname --quality HIGH --layout WIDESCREEN --encoding x265 --output $output --timestamp
+        $result = tesla_dashcam $folder.fullname --quality HIGH --layout WIDESCREEN --encoding x265 --output $output --timestamp
         #0.1.9
-        $result = .\tesla_dashcam.exe --quality HIGH --layout WIDESCREEN --encoding x265 --output $output --compression veryslow --no-notification $folder.fullname
+        #$result = .\tesla_dashcam.exe --quality HIGH --layout WIDESCREEN --encoding x265 --output $output --compression veryslow --no-notification $folder.fullname
         
         $result >> Tesla_Dashcam.log
 
@@ -37,6 +37,7 @@ if(!(Test-Connection $hostname -quiet))
     
         if(Test-Path "$output.mp4")
         {
+
             #Set the Created/Modified Date based on the filedate rather than copied date
             $file = Get-Item "$output.mp4"
             $datetime = [datetime]$folder.name.substring(0,10) + [TimeSpan]$folder.name.substring(11,8).replace('-',':')
