@@ -32,10 +32,10 @@ Stitch Sentry Mode / Saved footage together:
 - https://github.com/ehendrix23/tesla_dashcam
 - Note: Unable to run 0.1.9 via Python/pip on Windows, forcing 0.1.8 for now
 
-Pi Zero W: TeslaUSB - jspv branch
-- https://github.com/jspv/teslausb
+Pi Zero W: TeslaUSB - marcone dev-main branch
+- https://github.com/marcone/teslausb
 - balenaEtcher: https://www.balena.io/etcher/
-- latest teslausb boot image flashed via balenaEtcher: https://github.com/rtgoodwin/teslausb/releases
+- latest teslausb boot image flashed via balenaEtcher: https://github.com/marcone/teslausb/releases
 - Modified .conf for unattended setup
 - Pi Zero W Starter Kit: https://smile.amazon.com/gp/product/B0748MPQT4
 - Short Micro USB: https://smile.amazon.com/gp/product/B01NAMTC5T
