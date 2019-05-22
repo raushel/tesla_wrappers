@@ -7,13 +7,26 @@ $ErrorActionPreference = "Stop"
 $Global:LogFile = $PSScriptRoot.ToString() + '\' + ($MyInvocation.MyCommand.Name).Replace('.ps1','.log')
 $Global:ScriptName = $MyInvocation.MyCommand.ToString()
 
-#C:\Python37\python.exe -m pip install --upgrade pip
-#pip install tesla_dashcam==0.1.8
+C:\Python37\python.exe -m pip install --upgrade pip
+pip install tesla_dashcam==0.1.8
 #pip install tesla_dashcam --upgrade
+Install-PackageProvider NuGet -Force
+Install-Module posh-ssh -force
 
-if(!(Test-Connection $hostname -quiet))
+$online = Test-Connection $hostname -quiet
+
+#Check if sync is already complete
+if($online)
 {
-    LogIt -message ("$hostname is offline, starting run") -component "Test-Connection" -type 1 
+    $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $usbname, (ConvertTo-SecureString $usbpw -AsPlainText -Force)
+    $sess = New-SFTPSession -computername $hostname -credential $cred -AcceptKey
+    $cam = Get-SFTPChildItem -sessionid $sess.SessionId -path '/mnt/cam'
+}
+
+#Only run if offline or if cam has completed sync
+if(!$online -or $cam.count -eq 2)
+{
+    LogIt -message ("$hostname is offline/synced, starting run") -component "Test-Connection" -type 1 
     $dir = get-childitem -path $path -Recurse -Directory -Force -ErrorAction SilentlyContinue  | Where-Object {$_.Name -ne $outputFolder} | Select-Object Name,FullName
     $count = ($dir).count
     LogIt -message ("Folders to Process: $count") -component "Test-Connection" -type 2 
@@ -29,7 +42,7 @@ if(!(Test-Connection $hostname -quiet))
         #0.1.8
         $result = tesla_dashcam $folder.fullname --quality HIGH --layout WIDESCREEN --encoding x265 --output $output --timestamp
         #0.1.9
-        #$result = .\tesla_dashcam.exe --quality HIGH --layout WIDESCREEN --encoding x265 --output $output --compression veryslow --no-notification $folder.fullname
+        #$result = .\tesla_dashcam.exe $folder.fullname --quality HIGH --layout WIDESCREEN --encoding x265 --output $output --compression veryslow --no-notification
         
         $result >> Tesla_Dashcam.log
 
