@@ -26,3 +26,5 @@ $script:IP_5_Path = "CAR5-FOLDER"
 $Global:hostname = 'teslausb' #PiZero Hostname
 $Global:path = 'C:\ServerFolders\Pictures\DashCam\TeslaCam\'
 $Global:outputFolder = 'Stitched'
+$Global:usbname = 'pi'
+$Global:usbpw = 'mypassword'
