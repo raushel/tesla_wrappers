@@ -45,9 +45,9 @@ if(!$online -or $cam.count -eq 2)
         $result = .\tesla_dashcam.exe $folder.fullname --quality HIGH --layout WIDESCREEN --mirror --encoding x265 --no-notification --font /Windows/Fonts/arial.ttf
         
         #0.1.9 changed --output to also store the temp files in target directory, moving it after completion to avoid Plex issues
-        $path = "$foldername" + "\" + "$fold.mp4"
+        $src = "$foldername" + "\" + "$fold.mp4"
         LogIt -message ("Moving $path to $output") -component "Move-Item" -type 2
-        $move = Move-Item -Path $path -Destination "$output.mp4"
+        $move = Move-Item -Path $src -Destination "$output.mp4"
         
         $result >> Tesla_Dashcam.log
         LogIt -message ("Tesla_Dashcam.log updated with last run") -component "tesla_dashcam" -type 2
