@@ -1,6 +1,6 @@
 #BlackVue Downloader Variables
-$script:DCROOT_DRIVE = "C:"
-$script:DCROOT_FOLDER = "ServerFolders\Pictures\DashCam\BlackVue"
+#$script:DCROOT_DRIVE = "C:"
+$script:DCROOT_FOLDER = "C:\PathToBlackVue"
 
 $script:DC_CAR1 = "CAR1-NAME"
 $script:DC_IP_1 = "xxx.xxx.xxx.xxx"
@@ -24,7 +24,10 @@ $script:IP_5_Path = "CAR5-FOLDER"
 
 #Tesla_DashCam Variables
 $Global:hostname = 'teslausb' #PiZero Hostname
-$Global:path = 'C:\ServerFolders\Pictures\DashCam\TeslaCam\'
-$Global:outputFolder = 'Stitched'
+$Global:path = 'c:\PathToTeslaCam'
+$Global:outputFolder = 'OutputFolder'
 $Global:usbname = 'pi'
 $Global:usbpw = 'mypassword'
+
+#Cleanup Variables
+$Global:retDays = 60 #number of days of files to keep
