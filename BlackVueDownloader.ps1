@@ -78,9 +78,9 @@ Foreach ($checkpath in $CarPaths)
 
 write-output " ------------------------------------------------------------------------------------------------------- "
 write-output "`n"
-write-output "Testing path: $DCROOT_DRIVE\$DCROOT_FOLDER\$Checkpath\"
-LogIt -message ("Testing path: $DCROOT_DRIVE\$DCROOT_FOLDER\$Checkpath\") -component "check_paths()" -type 1 
-if (test-path $DCROOT_DRIVE\$DCROOT_FOLDER\$Checkpath\) 
+write-output "Testing path: $DCROOT_FOLDER\$Checkpath\"
+LogIt -message ("Testing path: $DCROOT_FOLDER\$Checkpath\") -component "check_paths()" -type 1 
+if (test-path $DCROOT_FOLDER\$Checkpath\) 
     { 
         write-output " -- TEST SUCCESSFUL"
         LogIt -message (" -- TEST SUCCESSFUL") -component "check_paths()" -type 1
@@ -232,10 +232,10 @@ $SCRIPT:DC_IP = $CARTARGET.IP
 write-output "`n"
 write-output "RETREIVING FILE LIST FROM CAMERA"
 LogIt -message ("Retreiving File List From Camera") -component "Process_Files()" -type 1
-(New-Object System.Net.WebClient).DownloadString("http://{0}/blackvue_vod.cgi" -f $CARTARGET.IP) >$DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\file.list
+(New-Object System.Net.WebClient).DownloadString("http://{0}/blackvue_vod.cgi" -f $CARTARGET.IP) >$DCROOT_FOLDER\$CARPATH\file.list
 write-output "`n"
 
-if (test-path $DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\file.list) {
+if (test-path $DCROOT_FOLDER\$CARPATH\file.list) {
     write-output "File List successfully retreived"
     LogIt -message ("File List successfully retreived") -component "Process_Files()" -type 2
     }else{
@@ -249,8 +249,8 @@ if (test-path $DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\file.list) {
 }
 write-output "`n"
 
-$SCRIPT:FILE_LIST1 = (Get-Content $DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\file.list) -notmatch "v:" -split "`r`n"
-DEL $DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\file.list
+$SCRIPT:FILE_LIST1 = (Get-Content $DCROOT_FOLDER\$CARPATH\file.list) -notmatch "v:" -split "`r`n"
+DEL $DCROOT_FOLDER\$CARPATH\file.list
 $SCRIPT:FILE_COUNT = $FILE_LIST1 | MEASURE |SELECT-OBJECT -EXPANDPROPERTY COUNT
 $SCRIPT:VID_COUNT = [math]::round( ($FILE_COUNT / 2) , [system.midpointrounding]::AwayFromZero )
 $SCRIPT:PARK_COUNT = ($FILE_LIST1 | WHERE-OBJECT  {$_ -LIKE "*_P*.MP4*"} | MEASURE |SELECT-OBJECT -EXPANDPROPERTY COUNT)
@@ -277,7 +277,7 @@ $SCRIPT:FILE_LIST_NORMAL_TMP = New-Object System.Collections.Generic.List[System
 $SCRIPT:FILE_LIST_MANUAL_TMP = New-Object System.Collections.Generic.List[System.Object]
 $SCRIPT:FILE_LIST_ALL_TMP = New-Object System.Collections.Generic.List[System.Object]
 
-FOREACH ($LISTING IN $FILE_LIST2) {IF ( test-path "$DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\$LISTING" ) {
+FOREACH ($LISTING IN $FILE_LIST2) {IF ( test-path "$DCROOT_FOLDER\$CARPATH\$LISTING" ) {
     }else{ 
           $FILE_LIST3.ADD("$LISTING")
          }
@@ -519,7 +519,7 @@ $url3 = "http://$DC_IP/Record/$DATA.3gf"
 
 $VIDNAME = $DATA + 'F.mp4'
 Write-Output $VIDNAME
-$DEST = "$DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\$VIDNAME"
+$DEST = "$DCROOT_FOLDER\$CARPATH\$VIDNAME"
 (New-Object System.Net.WebClient).DownloadFile($urlF, $DEST)
     IF ($FILENUM_PROGRESS_UNROUNDED -EQ $VID_COUNT)
     {
@@ -535,7 +535,7 @@ $DEST = "$DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\$VIDNAME"
 
 $VIDNAME = $DATA + 'R.mp4'
 Write-Output $VIDNAME
-$DEST = "$DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\$VIDNAME"
+$DEST = "$DCROOT_FOLDER\$CARPATH\$VIDNAME"
 (New-Object System.Net.WebClient).DownloadFile($urlR, $DEST)
     IF ($FILENUM_PROGRESS_UNROUNDED -EQ $VID_COUNT)
     {
@@ -551,7 +551,7 @@ $DEST = "$DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\$VIDNAME"
 
 $VIDNAME = $DATA + '.gps'
 Write-Output $VIDNAME
-$DEST = "$DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\$VIDNAME"
+$DEST = "$DCROOT_FOLDER\$CARPATH\$VIDNAME"
 (New-Object System.Net.WebClient).DownloadFile($urlG, $DEST)
     IF ($FILENUM_PROGRESS_UNROUNDED -EQ $VID_COUNT)
     {
@@ -568,7 +568,7 @@ timestamp -path $DEST -filename $VIDNAME
 
 $VIDNAME = $DATA + '.3gf'
 Write-Output $VIDNAME 
-$DEST = "$DCROOT_DRIVE\$DCROOT_FOLDER\$CARPATH\$VIDNAME"
+$DEST = "$DCROOT_FOLDER\$CARPATH\$VIDNAME"
 (New-Object System.Net.WebClient).DownloadFile($url3, $DEST)
     IF ($FILENUM_PROGRESS_UNROUNDED -EQ $VID_COUNT)
     {
