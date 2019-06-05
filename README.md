@@ -1,7 +1,7 @@
 # tesla_wrappers
 Wrappers for various Tesla / Blackvue Automations using Windows, PowerShell, and Python.
 
-Referral Code (5000 Free Supercharger Miles):
+Referral Code (1000 Free Supercharger Miles):
  - https://www.tesla.com/referral/mario3921
 
 Dependencies / Modified Sources
@@ -36,7 +36,7 @@ Pi Zero W: TeslaUSB - marcone dev-main branch
 - https://github.com/marcone/teslausb
 - balenaEtcher: https://www.balena.io/etcher/
 - latest teslausb boot image flashed via balenaEtcher: https://github.com/marcone/teslausb/releases
-- Modified .conf for unattended setup
+- Sample .conf: https://github.com/marcone/teslausb/blob/main-dev/doc/teslausb_setup_variables.conf.sample
 - Pi Zero W Starter Kit: https://smile.amazon.com/gp/product/B0748MPQT4
 - Short Micro USB: https://smile.amazon.com/gp/product/B01NAMTC5T
 - Samsung Pro Endurance 128GB: https://smile.amazon.com/gp/product/B07B984HJ5
