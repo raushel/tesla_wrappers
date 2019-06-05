@@ -7,9 +7,11 @@ $ErrorActionPreference = "Stop"
 $Global:LogFile = $PSScriptRoot.ToString() + '\' + ($MyInvocation.MyCommand.Name).Replace('.ps1','.log')
 $Global:ScriptName = $MyInvocation.MyCommand.ToString()
 
-#C:\Python37\python.exe -m pip install --upgrade pip
-#pip install tesla_dashcam==0.1.8
-#pip install tesla_dashcam --upgrade
+C:\Python37\python.exe -m pip install --upgrade pip
+pip install tesla_dashcam==0.1.10
+pip install tesla_dashcam --upgrade
+
+#Only needed on first run
 #Install-PackageProvider NuGet -Force
 #Install-Module posh-ssh -force
 
@@ -42,7 +44,10 @@ if(!$online -or $cam.count -eq 2)
         #0.1.8
         #$result = tesla_dashcam $folder.fullname --quality HIGH --layout WIDESCREEN --encoding x265 --output $output --timestamp
         #0.1.9
-        $result = .\tesla_dashcam.exe $folder.fullname --quality HIGH --layout WIDESCREEN --rear --encoding x265 --no-notification --font /Windows/Fonts/arial.ttf
+        #$result = .\tesla_dashcam.exe $folder.fullname --quality HIGH --layout WIDESCREEN --rear --encoding x265 --no-notification --font /Windows/Fonts/arial.ttf
+        #0.1.10
+        #Force output back to folder instead of new default: Videos\Tesla_Dashcam (Windows) 
+        $result = .\tesla_dashcam.exe $folder.fullname --quality HIGH --layout WIDESCREEN --rear --encoding x265 --no-notification --output $folder.fullname
         
         #0.1.9 changed --output to also store the temp files in target directory, moving it after completion to avoid Plex issues
         $src = "$foldername" + "\" + "$fold.mp4"
