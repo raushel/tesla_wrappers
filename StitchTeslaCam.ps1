@@ -39,7 +39,8 @@ if(!$online -or $cam.count -eq 2)
     {
         $foldername = $folder.fullname
         $fold = $folder.name
-        LogIt -message ("Starting:  $foldername ($i / $count)") -component "tesla_dashcam" -type 1 
+        LogIt -message ("Starting:  $foldername ($i / $count)") -component "tesla_dashcam" -type 1
+        $i++
 
         #0.1.10
         #Force output back to folder instead of new default: Videos\Tesla_Dashcam (Windows) 
