@@ -1,5 +1,5 @@
 #BlackVue Downloader Variables
-#$script:DCROOT_DRIVE = "C:"
+#No Trailing \ in Path
 $script:DCROOT_FOLDER = "C:\PathToBlackVue"
 
 $script:DC_CAR1 = "CAR1-NAME"
@@ -24,6 +24,7 @@ $script:IP_5_Path = "CAR5-FOLDER"
 
 #Tesla_DashCam Variables
 $Global:hostname = 'teslausb' #PiZero Hostname
+#No Trailing \ in Path
 $Global:path = 'c:\PathToTeslaCam'
 $Global:outputFolder = 'OutputFolder'
 $Global:usbname = 'pi'
