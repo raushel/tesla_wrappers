@@ -32,42 +32,39 @@ if(!$online -or $cam.count -eq 2)
     $dir = get-childitem -path $path -Recurse -Directory -Force -ErrorAction SilentlyContinue  | Where-Object {$_.Name -ne $outputFolder} | Select-Object Name,FullName
     $count = ($dir).count
     LogIt -message ("Folders to Process: $count") -component "Test-Connection" -type 2 
+    
+    $i = 1
 
     foreach($folder in $dir) 
     {
         $foldername = $folder.fullname
         $fold = $folder.name
-        LogIt -message ("Starting:  $foldername") -component "tesla_dashcam" -type 1 
+        LogIt -message ("Starting:  $foldername, ($i / $count)") -component "tesla_dashcam" -type 1 
 
-        #0.1.8
-        #$output = $path + $outputFolder + '\' + $fold
-        #$result = tesla_dashcam $foldername --quality HIGH --layout WIDESCREEN --encoding x265 --output $output --timestamp
-        #0.1.9
-        #$result = .\tesla_dashcam.exe $foldername --quality HIGH --layout WIDESCREEN --rear --encoding x265 --no-notification --font /Windows/Fonts/arial.ttf
         #0.1.10
         #Force output back to folder instead of new default: Videos\Tesla_Dashcam (Windows) 
         $output = $foldername + '\' + $fold + '.mp4'
+        $dest = $path + $outputFolder + '\' + $fold + '.mp4'
         $result = tesla_dashcam $foldername --quality HIGH --layout WIDESCREEN --rear --encoding x265 --no-notification --output $output
         
         #0.1.9 changed --output to also store the temp files in target directory, moving it after completion to avoid Plex issues
-        $src = "$foldername" + "\" + "$fold.mp4"
-        LogIt -message ("Moving $path to $output") -component "Move-Item" -type 2
-        $move = Move-Item -Path $src -Destination "$output.mp4"
+        LogIt -message ("Moving $output to $dest") -component "Move-Item" -type 2
+        $move = Move-Item -Path "$output" -Destination "$dest"
         
         $result >> Tesla_Dashcam.log
         LogIt -message ("Tesla_Dashcam.log updated with last run") -component "tesla_dashcam" -type 2
     
-        if(Test-Path "$output.mp4")
+        if(Test-Path "$dest")
         {
             #Set the Created/Modified Date based on the filedate rather than copied date
-            $file = Get-Item "$output.mp4"
-            $datetime = [datetime]$folder.name.substring(0,10) + [TimeSpan]$folder.name.substring(11,8).replace('-',':')
+            $file = Get-Item "$dest"
+            $datetime = [datetime]$fold.substring(0,10) + [TimeSpan]$fold.substring(11,8).replace('-',':')
 
             $file.LastWriteTime = $datetime
             $file.CreationTime = $datetime
 
             LogIt -message ("Deleting:  $fold") -component "Remove-Item" -type 1 
-            Remove-Item -Recurse -Force $folder.fullname
+            Remove-Item -Recurse -Force $foldername
         }
         else {
             LogIt -message ("Error: $output.mp4 not created, see results from tesla_dashcam") -component "Test-Path" -type 3 
