@@ -39,12 +39,12 @@ if(!$online -or $cam.count -eq 2)
     {
         $foldername = $folder.fullname
         $fold = $folder.name
-        LogIt -message ("Starting:  $foldername, ($i / $count)") -component "tesla_dashcam" -type 1 
+        LogIt -message ("Starting:  $foldername ($i / $count)") -component "tesla_dashcam" -type 1 
 
         #0.1.10
         #Force output back to folder instead of new default: Videos\Tesla_Dashcam (Windows) 
         $output = $foldername + '\' + $fold + '.mp4'
-        $dest = $path + $outputFolder + '\' + $fold + '.mp4'
+        $dest = $path + '\' + $outputFolder + '\' + $fold + '.mp4'
         $result = tesla_dashcam $foldername --quality HIGH --layout WIDESCREEN --rear --encoding x265 --no-notification --output $output
         
         #0.1.9 changed --output to also store the temp files in target directory, moving it after completion to avoid Plex issues
