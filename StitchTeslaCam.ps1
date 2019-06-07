@@ -42,18 +42,39 @@ if(!$online -or $cam.count -eq 2)
         LogIt -message ("Starting:  $foldername ($i / $count)") -component "tesla_dashcam" -type 1
         $i++
 
+        if((Get-ChildItem $foldername | Measure-Object).Count -eq 0)
+        {
+            LogIt -message ("Folder is empty, removing $foldername") -component "tesla_dashcam" -type 3
+            try{
+                Remove-Item $foldername
+            }
+            catch{
+                LogIt -message ("$_") -componenet "tesla_dashcam" -type 3
+            }
+            Continue
+        }
+
         #0.1.10
         #Force output back to folder instead of new default: Videos\Tesla_Dashcam (Windows) 
         $output = $foldername + '\' + $fold + '.mp4'
         $dest = $path + '\' + $outputFolder + '\' + $fold + '.mp4'
-        $result = tesla_dashcam $foldername --quality HIGH --layout WIDESCREEN --rear --encoding x265 --no-notification --output $output
-        
-        #0.1.9 changed --output to also store the temp files in target directory, moving it after completion to avoid Plex issues
-        LogIt -message ("Moving $output to $dest") -component "Move-Item" -type 2
-        $move = Move-Item -Path "$output" -Destination "$dest"
-        
+        Try{
+            $result = tesla_dashcam $foldername --quality HIGH --layout WIDESCREEN --rear --encoding x265 --no-notification --output $output
+        }
+        Catch{
+            LogIt -message ("$_") -componenet "tesla_dashcam" -type 3
+        }
         $result >> Tesla_Dashcam.log
         LogIt -message ("Tesla_Dashcam.log updated with last run") -component "tesla_dashcam" -type 2
+
+        #0.1.9 changed --output to also store the temp files in target directory, moving it after completion to avoid Plex issues
+        try {
+            Move-Item -Path "$output" -Destination "$dest"
+            LogIt -message ("Moved $output to $dest") -component "Move-Item" -type 2
+        }
+        catch {
+            LogIt -message ("$_") -component "Move-Item" -Type 3
+        }
     
         if(Test-Path "$dest")
         {
@@ -64,8 +85,13 @@ if(!$online -or $cam.count -eq 2)
             $file.LastWriteTime = $datetime
             $file.CreationTime = $datetime
 
-            LogIt -message ("Deleting:  $fold") -component "Remove-Item" -type 1 
-            Remove-Item -Recurse -Force $foldername
+            try{
+                Remove-Item -Recurse -Force $foldername
+                LogIt -message ("Deleted: $fold") -component "Remove-Item" -type 1 
+            }
+            catch {
+                Logit -message ("$_") -component "Remove-Item" -Type 3
+            }
         }
         else {
             LogIt -message ("Error: $output.mp4 not created, see results from tesla_dashcam") -component "Test-Path" -type 3 
