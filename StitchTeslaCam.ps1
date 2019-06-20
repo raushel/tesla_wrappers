@@ -49,7 +49,7 @@ if(!$online -or $cam.count -eq 2)
                 Remove-Item $foldername
             }
             Catch {
-                LogIt -message ("$_") -componenet "tesla_dashcam" -type 3
+                LogIt -message ("$_") -component "tesla_dashcam" -type 3
             }
             Continue
         }
@@ -62,7 +62,7 @@ if(!$online -or $cam.count -eq 2)
             $result = tesla_dashcam $foldername --quality HIGH --layout WIDESCREEN --rear --encoding x265 --no-notification --output $output
         }
         Catch {
-            LogIt -message ("$_") -componenet "tesla_dashcam" -type 3
+            LogIt -message ("$_") -component "tesla_dashcam" -type 3
         }
         #$result >> Tesla_Dashcam.log
         $result | Out-File -Append -Encoding UTF8 -FilePath ("filesystem::{0}" -f $Global:LogFile)

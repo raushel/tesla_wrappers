@@ -45,7 +45,7 @@ function LogIt
   if ((Get-Item $Global:LogFile).Length/1KB -gt $Global:MaxLogSizeInKB)
   {
     $log = $Global:LogFile
-    Remove-Item ($log.Replace(".log", ".lo_"))
+    Remove-Item ($log.Replace(".log", ".lo_")) -ErrorAction SilentlyContinue
     Rename-Item $Global:LogFile ($log.Replace(".log", ".lo_")) -Force
   }
 } 
