@@ -32,3 +32,9 @@ $Global:usbpw = 'mypassword'
 
 #Cleanup Variables
 $Global:retDays = 60 #number of days of files to keep
+
+#Pushover
+#Use $false or $true
+$Global:pushover_enabled=$false
+$Global:pushover_user_key="your user key"
+$Global:pushover_app_key="your app key"
