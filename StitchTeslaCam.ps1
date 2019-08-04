@@ -7,9 +7,12 @@ $ErrorActionPreference = "Stop"
 $Global:LogFile = $PSScriptRoot.ToString() + '\' + ($MyInvocation.MyCommand.Name).Replace('.ps1','.log')
 $Global:ScriptName = $MyInvocation.MyCommand.ToString()
 
+$Script:FileCount = 0
+
 C:\Python37\python.exe -m pip install --upgrade pip
+#pip install ffmpeg --upgrade
 pip install tesla_dashcam==0.1.10
-pip install tesla_dashcam --upgrade
+#pip install tesla_dashcam --upgrade
 
 #Only needed on first run
 #Install-PackageProvider NuGet -Force
@@ -30,8 +33,12 @@ if(!$online -or $cam.count -eq 2)
 {
     LogIt -message ("$hostname is offline/synced, starting run") -component "Test-Connection" -type 1 
     $dir = get-childitem -path $path -Recurse -Directory -Force -ErrorAction SilentlyContinue  | Where-Object {$_.Name -ne $outputFolder} | Select-Object Name,FullName
-    $count = ($dir).count
-    LogIt -message ("Folders to Process: $count") -component "Test-Connection" -type 2 
+    $dirs = $dir | Measure-Object
+    $count = ($dirs).count
+
+    if($count -gt 0) {$type = 3}
+    else {$type = 2}
+    LogIt -message ("Folders to Process: $count") -component "Test-Connection" -type $type 
     
     $i = 1
 
@@ -55,23 +62,32 @@ if(!$online -or $cam.count -eq 2)
         }
 
         #0.1.10
-        #Force output back to folder instead of new default: Videos\Tesla_Dashcam (Windows) 
+        #Force output back to folder instead of new default: Videos\Tesla_Dashcam (Windows)
+        #Force disable timestamps for Server 2019 due to ffmpeg errors around 0.1.11
         $output = $foldername + '\' + $fold + '.mp4'
         $dest = $path + '\' + $outputFolder + '\' + $fold + '.mp4'
         Try {
-            $result = tesla_dashcam $foldername --quality HIGH --layout WIDESCREEN --rear --encoding x265 --no-notification --output $output
+            $result = tesla_dashcam.exe --quality HIGH --layout WIDESCREEN --rear --encoding x265 --no-notification --output $output $foldername --no-timestamp --no-check_for_update
         }
         Catch {
             LogIt -message ("$_") -component "tesla_dashcam" -type 3
         }
         #$result >> Tesla_Dashcam.log
         $result | Out-File -Append -Encoding UTF8 -FilePath ("filesystem::{0}" -f $Global:LogFile)
-        LogIt -message ("Tesla_Dashcam.log updated with last run") -component "tesla_dashcam" -type 2
+        #LogIt -message ("Tesla_Dashcam.log updated with last run") -component "tesla_dashcam" -type 2
 
         #0.1.9 changed --output to also store the temp files in target directory, moving it after completion to avoid Plex issues
         try {
-            Move-Item -Path "$output" -Destination "$dest"
-            LogIt -message ("Moved $output to $dest") -component "Move-Item" -type 2
+            if(!((Get-Item "$output") -is [System.IO.DirectoryInfo]))
+            {
+                Move-Item -Path "$output" -Destination "$dest"
+                LogIt -message ("Moved $output to $dest") -component "Move-Item" -type 2
+            }
+            else{
+                LogIt -message ("$Output is Directory") -component "Move-Item" -Type 3
+                #Remove-Item "$output"
+                Throw -message $Output is Directory
+            }
         }
         catch {
             LogIt -message ("$_") -component "Move-Item" -Type 3
@@ -85,6 +101,7 @@ if(!$online -or $cam.count -eq 2)
 
             $file.LastWriteTime = $datetime
             $file.CreationTime = $datetime
+            $Script:FileCount++
 
             try{
                 Remove-Item -Recurse -Force $foldername
@@ -97,8 +114,9 @@ if(!$online -or $cam.count -eq 2)
         else {
             LogIt -message ("Error: $output.mp4 not created, see results from tesla_dashcam") -component "Test-Path" -type 3 
         }
+        LogIt -message ("StitchTeslaCam: $Script:FileCount Processed") -component "Complete" -type 3
     }
-    LogIt -message ("Completed Run") -component "Complete" -type 1 
+    LogIt -message ("Completed Run") -component "Complete" -type 1
 }
 else {
     LogIt -message ("$hostname is online, skipping run") -component "Test-Connection" -type 1  

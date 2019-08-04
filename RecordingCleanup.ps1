@@ -14,8 +14,7 @@ if($oldfiles)
 {
     $oldCount = $oldfiles.Count
     $oldSize = [Math]::Round(($oldfiles | Measure-Object -Sum Length).Sum / 1GB)
-    LogIt -message ("Files to Delete: $oldCount") -component 'Count' -type 3
-    LogIt -message ("Size to Delete: $oldSize GB") -component 'Sum' -type 1
+    LogIt -message ("Files to Delete: $oldCount, $oldSize GB") -component 'Count/Size' -type 3
 
     foreach($oldfile in $oldfiles.FullName) 
     {

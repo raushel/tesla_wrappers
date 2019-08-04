@@ -9,6 +9,8 @@ $Global:ScriptStatus = 'Success'
 $Global:LogFile = $PSScriptRoot.ToString() + '\' + ($MyInvocation.MyCommand.Name).Replace('.ps1','.log')
 $Global:ScriptName = $MyInvocation.MyCommand.ToString()
 
+$uri = "https://api.pushover.net/1/messages.json"
+
 function LogIt
 {
   param (
@@ -40,7 +42,20 @@ function LogIt
     Write-Host $message
   }
   if (($type -eq 'Warning') -and ($Global:ScriptStatus -ne 'Error')) { $Global:ScriptStatus = $type }
-  if ($type -eq 'Error') { $Global:ScriptStatus = $type }
+  if ($type -eq 'Error') 
+  { 
+    $Global:ScriptStatus = $type
+    
+    if($Global:pushover_enabled)
+    {
+      $parameters = @{
+        token = $Global:pushover_app_key
+        user = $Global:pushover_user_key
+        message = "$component : $message"
+      }
+      $parameters | Invoke-RestMethod -Uri $uri -Method Post
+    }
+  }
 
   if ((Get-Item $Global:LogFile).Length/1KB -gt $Global:MaxLogSizeInKB)
   {

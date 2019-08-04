@@ -361,19 +361,20 @@ write-output "`n"
 write-output " ------------------------------------------------------------------------------------------------------- "
 write-output "`n"
 write-output "TOTAL NUMBER OF VIDEOS ON THE CAMERA IS $VID_COUNT WITH $VID_COUNT_NEW NEW"
-LogIt -message ("Total:  $VID_COUNT | New: $VID_COUNT_NEW ") -component "Process_Files()" -type 1
+if($VID_COUNT_NEW -gt 20) {$type = 3} else {$type = 1}
+LogIt -message ("Total:  $VID_COUNT | New: $VID_COUNT_NEW ") -component "Process_Files()" -type $type
 write-output "`n"
 write-output "NUMBER OF NORMAL RECORDINGS IS $NORMAL_COUNT WITH $NORMAL_COUNT_NEW NEW"
-LogIt -message ("Normal: $NORMAL_COUNT | New: $NORMAL_COUNT_NEW") -component "Process_Files()" -type 1
+LogIt -message ("Normal: $NORMAL_COUNT | New: $NORMAL_COUNT_NEW") -component "Process_Files()" -type $type
 write-output "`n"
 write-output "NUMBER OF EVENT RECORDINGS IS $EVENT_COUNT WITH $EVENT_COUNT_NEW NEW"
-LogIt -message ("Event:  $EVENT_COUNT | New: $EVENT_COUNT_NEW") -component "Process_Files()" -type 1
+LogIt -message ("Event:  $EVENT_COUNT | New: $EVENT_COUNT_NEW") -component "Process_Files()" -type $type
 write-output "`n"
 write-output "NUMBER OF PARKED RECORDINGS IS $PARK_COUNT WITH $PARK_COUNT_NEW NEW"
-LogIt -message ("Parked: $PARK_COUNT | New: $PARK_COUNT_NEW") -component "Process_Files()" -type 1
+LogIt -message ("Parked: $PARK_COUNT | New: $PARK_COUNT_NEW") -component "Process_Files()" -type $type
 write-output "`n"
 write-output "NUMBER OF MANUAL RECORDINGS IS $MANUAL_COUNT WITH $MANUAL_COUNT_NEW NEW"
-LogIt -message ("Manual: $MANUAL_COUNT | New: $MANUAL_COUNT_NEW") -component "Process_Files()" -type 1
+LogIt -message ("Manual: $MANUAL_COUNT | New: $MANUAL_COUNT_NEW") -component "Process_Files()" -type $type
 write-output "`n"
 write-output " ------------------------------------------------------------------------------------------------------- "
 
@@ -600,13 +601,8 @@ write-output "`n"
 write-output "`n"
 
 write-output "All files have been downloaded from the camera."
-LogIt -message ("All files have been downloaded from the camera.") -component "Download_Vids()" -type 1 
+LogIt -message ("All files have been downloaded from the camera.") -component "Download_Vids()" -type $type 
 write-output "`n"
-#write-output " Please press a key to complete the operaton. "
-#$HOST.UI.RawUI.Flushinputbuffer()
-#$HOST.UI.RawUI.ReadKey(“NoEcho,IncludeKeyDown”) | OUT-NULL
-#$HOST.UI.RawUI.Flushinputbuffer()
-
 
 write-output " ------------------------------------------------------------------------------------------------------- "
 write-output " ------------------------------------------------------------------------------------------------------- "
