@@ -1,8 +1,5 @@
 # tesla_wrappers
-Wrappers for various Tesla / Blackvue Automations using Windows, PowerShell, and Python.
-
-Referral Code (1000 Free Supercharger Miles):
- - https://www.tesla.com/referral/mario3921
+Wrappers for various Tesla / Blackvue Automations using Windows, PowerShell, and Python
 
 Dependencies / Modified Sources
 - Windows CIFS Network Share
