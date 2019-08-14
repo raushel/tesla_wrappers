@@ -63,18 +63,16 @@ if(!$online -or $cam.count -eq 2)
 
         #0.1.10
         #Force output back to folder instead of new default: Videos\Tesla_Dashcam (Windows)
-        #Force disable timestamps for Server 2019 due to ffmpeg errors around 0.1.11
         $output = $foldername + '\' + $fold + '.mp4'
         $dest = $path + '\' + $outputFolder + '\' + $fold + '.mp4'
         Try {
-            $result = tesla_dashcam.exe --quality HIGH --layout WIDESCREEN --rear --encoding x265 --no-notification --output $output $foldername --no-timestamp --no-check_for_update
+            $result = tesla_dashcam --quality HIGH --layout WIDESCREEN --rear --encoding x265 --no-notification --output $output $foldername --no-check_for_update #--no-timestamp
         }
         Catch {
             LogIt -message ("$_") -component "tesla_dashcam" -type 3
         }
         #$result >> Tesla_Dashcam.log
         $result | Out-File -Append -Encoding UTF8 -FilePath ("filesystem::{0}" -f $Global:LogFile)
-        #LogIt -message ("Tesla_Dashcam.log updated with last run") -component "tesla_dashcam" -type 2
 
         #0.1.9 changed --output to also store the temp files in target directory, moving it after completion to avoid Plex issues
         try {
@@ -86,7 +84,7 @@ if(!$online -or $cam.count -eq 2)
             else{
                 LogIt -message ("$Output is Directory") -component "Move-Item" -Type 3
                 #Remove-Item "$output"
-                Throw -message $Output is Directory
+                Write-Error "$Output is Directory"
             }
         }
         catch {
@@ -112,7 +110,7 @@ if(!$online -or $cam.count -eq 2)
             }
         }
         else {
-            LogIt -message ("Error: $output.mp4 not created, see results from tesla_dashcam") -component "Test-Path" -type 3 
+            LogIt -message ("Error: $output not created, see results from tesla_dashcam") -component "Test-Path" -type 3 
         }
         LogIt -message ("StitchTeslaCam: $Script:FileCount Processed") -component "Complete" -type 3
     }
