@@ -1,5 +1,5 @@
 # tesla_wrappers
-Wrappers for various Tesla / Blackvue Automations using Windows, PowerShell, and Python
+Wrappers for various TeslaCam / Blackvue Automations using Windows, PowerShell, and Python
 
 Dependencies / Modified Sources
 - Windows CIFS Network Share
