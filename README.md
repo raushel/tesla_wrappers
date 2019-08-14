@@ -1,6 +1,10 @@
 # tesla_wrappers
 Wrappers for various TeslaCam / Blackvue Automations using Windows, PowerShell, and Python
 
+Use:
+- All of the .ps1 files are meant to be run either manually or via scheduled task (created by the related .XML files when imported into Task Scheduler)
+- All scripts run headless, but logging output is available in the console of via .log File
+
 Dependencies / Modified Sources
 - Windows CIFS Network Share
 - Local DNS registration for BlackVue / Teslausb
