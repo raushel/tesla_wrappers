@@ -11,7 +11,7 @@ $Script:FileCount = 0
 
 C:\Python37\python.exe -m pip install --upgrade pip
 #pip install ffmpeg --upgrade
-pip install tesla_dashcam==0.1.10
+pip install tesla_dashcam==0.1.11
 #pip install tesla_dashcam --upgrade
 
 #Only needed on first run
