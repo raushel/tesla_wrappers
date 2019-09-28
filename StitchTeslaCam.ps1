@@ -8,10 +8,11 @@ $Global:LogFile = $PSScriptRoot.ToString() + '\' + ($MyInvocation.MyCommand.Name
 $Global:ScriptName = $MyInvocation.MyCommand.ToString()
 
 $Script:FileCount = 0
+$Script:Dest = $NULL
 
 C:\Python37\python.exe -m pip install --upgrade pip
 #pip install ffmpeg --upgrade
-pip install tesla_dashcam==0.1.11
+pip install tesla_dashcam==0.1.14
 #pip install tesla_dashcam --upgrade
 
 #Only needed on first run
@@ -64,37 +65,46 @@ if(!$online -or $cam.count -eq 2)
         #0.1.10
         #Force output back to folder instead of new default: Videos\Tesla_Dashcam (Windows)
         $output = $foldername + '\' + $fold + '.mp4'
-        $dest = $path + '\' + $outputFolder + '\' + $fold + '.mp4'
+        $Script:dest = $path + '\' + $outputFolder + '\' + $fold + '.mp4'
         Try {
-            $result = tesla_dashcam --quality HIGH --layout WIDESCREEN --rear --encoding x265 --no-notification --output $output $foldername --no-check_for_update #--no-timestamp
+            $result = tesla_dashcam --quality HIGH --layout WIDESCREEN --rear --encoding x265 --no-notification --output $output $foldername --no-check_for_update --motion_only
         }
         Catch {
             LogIt -message ("$_") -component "tesla_dashcam" -type 3
         }
-        #$result >> Tesla_Dashcam.log
+        
         $result | Out-File -Append -Encoding UTF8 -FilePath ("filesystem::{0}" -f $Global:LogFile)
 
         #0.1.9 changed --output to also store the temp files in target directory, moving it after completion to avoid Plex issues
         try {
-            if(!((Get-Item "$output") -is [System.IO.DirectoryInfo]))
+            If(!((Get-Item "$output") -is [System.IO.DirectoryInfo]))
             {
-                Move-Item -Path "$output" -Destination "$dest"
-                LogIt -message ("Moved $output to $dest") -component "Move-Item" -type 2
+                If(Test-Path $Script:dest) 
+                {
+                    $i = 0
+                    While (Test-Path $Script:dest) 
+                    {
+                        $i += 1
+                        $Script:dest = $path + '\' + $outputFolder + '\' + $fold + ' (' + $i + ').mp4'
+                    }
+                }
+                Move-Item -Path "$output" -Destination "$Script:dest"
+                LogIt -message ("Moved $fold to $Script:dest") -component "Move-Item" -type 2
             }
-            else{
+            Else
+            {
                 LogIt -message ("$Output is Directory") -component "Move-Item" -Type 3
-                #Remove-Item "$output"
                 Write-Error "$Output is Directory"
             }
         }
         catch {
-            LogIt -message ("$_") -component "Move-Item" -Type 3
+            LogIt -message ("$_, $Script:dest") -component "Move-Item" -Type 3
         }
     
-        if(Test-Path "$dest")
+        if(Test-Path "$Script:dest")
         {
             #Set the Created/Modified Date based on the filedate rather than copied date
-            $file = Get-Item "$dest"
+            $file = Get-Item "$Script:dest"
             $datetime = [datetime]$fold.substring(0,10) + [TimeSpan]$fold.substring(11,8).replace('-',':')
 
             $file.LastWriteTime = $datetime
@@ -103,16 +113,16 @@ if(!$online -or $cam.count -eq 2)
 
             try{
                 Remove-Item -Recurse -Force $foldername
-                LogIt -message ("Deleted: $fold") -component "Remove-Item" -type 1 
+                LogIt -message ("Deleted: $fold ($Script:FileCount / $count)") -component "Remove-Item" -type 1 
             }
             catch {
                 Logit -message ("$_") -component "Remove-Item" -Type 3
             }
         }
         else {
-            LogIt -message ("Error: $output not created, see results from tesla_dashcam") -component "Test-Path" -type 3 
+            LogIt -message ("Error: $Script:dest not created, see results from tesla_dashcam") -component "Test-Path" -type 3 
         }
-        LogIt -message ("StitchTeslaCam: $Script:FileCount Processed") -component "Complete" -type 3
+        LogIt -message ("StitchTeslaCam: $fold ($Script:FileCount / $count) Processed") -component "Complete" -type 3
     }
     LogIt -message ("Completed Run") -component "Complete" -type 1
 }
