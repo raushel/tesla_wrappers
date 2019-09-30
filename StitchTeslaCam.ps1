@@ -13,6 +13,8 @@ $Script:Dest = $NULL
 C:\Python37\python.exe -m pip install --upgrade pip
 #pip install ffmpeg --upgrade
 pip install tesla_dashcam==0.1.14
+pip install python-dateutil
+
 #pip install tesla_dashcam --upgrade
 
 #Only needed on first run
@@ -22,9 +24,10 @@ pip install tesla_dashcam==0.1.14
 $online = Test-Connection $hostname -quiet
 
 #Check if sync is already complete
-if($online)
+if($online -and $usbpw)
 {
     $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $usbname, (ConvertTo-SecureString $usbpw -AsPlainText -Force)
+    #catch bad password
     $sess = New-SFTPSession -computername $hostname -credential $cred -AcceptKey
     $cam = Get-SFTPChildItem -sessionid $sess.SessionId -path '/mnt/cam'
 }
@@ -67,7 +70,7 @@ if(!$online -or $cam.count -eq 2)
         $output = $foldername + '\' + $fold + '.mp4'
         $Script:dest = $path + '\' + $outputFolder + '\' + $fold + '.mp4'
         Try {
-            $result = tesla_dashcam --quality HIGH --layout WIDESCREEN --rear --encoding x265 --no-notification --output $output $foldername --no-check_for_update --motion_only
+            $result = tesla_dashcam --quality HIGH --layout WIDESCREEN --rear --encoding x265 --output $output $foldername --no-check_for_update --motion_only
         }
         Catch {
             LogIt -message ("$_") -component "tesla_dashcam" -type 3
