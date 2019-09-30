@@ -28,7 +28,7 @@ $Global:hostname = 'teslausb' #PiZero Hostname
 $Global:path = 'c:\PathToTeslaCam'
 $Global:outputFolder = 'OutputFolder'
 $Global:usbname = 'pi'
-$Global:usbpw = 'mypassword'
+$Global:usbpw = $null
 
 #Cleanup Variables
 $Global:retDays = 60 #number of days of files to keep
