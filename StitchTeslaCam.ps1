@@ -13,7 +13,7 @@ $Script:Dest = $NULL
 C:\Python37\python.exe -m pip install --upgrade pip
 #pip install ffmpeg --upgrade
 pip install tesla_dashcam==0.1.14
-pip install python-dateutil
+pip install python-dateutil --upgrade
 
 #pip install tesla_dashcam --upgrade
 
@@ -70,7 +70,7 @@ if(!$online -or $cam.count -eq 2)
         $output = $foldername + '\' + $fold + '.mp4'
         $Script:dest = $path + '\' + $outputFolder + '\' + $fold + '.mp4'
         Try {
-            $result = tesla_dashcam --quality HIGH --layout WIDESCREEN --rear --encoding x265 --output $output $foldername --no-check_for_update --motion_only
+            $result = tesla_dashcam --quality HIGH --layout DIAMOND --rear --encoding x265 --output $output $foldername --no-check_for_update --motion_only
         }
         Catch {
             LogIt -message ("$_") -component "tesla_dashcam" -type 3
