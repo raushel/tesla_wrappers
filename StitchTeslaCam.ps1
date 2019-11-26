@@ -12,8 +12,8 @@ $Script:Dest = $NULL
 
 C:\Python37\python.exe -m pip install --upgrade pip
 #pip install ffmpeg --upgrade
-pip install tesla_dashcam==0.1.14
-pip install python-dateutil --upgrade
+pip install tesla_dashcam==0.1.16
+#pip install python-dateutil --upgrade
 
 #pip install tesla_dashcam --upgrade
 
@@ -26,10 +26,10 @@ $online = Test-Connection $hostname -quiet
 #Check if sync is already complete
 if($online -and $usbpw)
 {
-    $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $usbname, (ConvertTo-SecureString $usbpw -AsPlainText -Force)
+    #$cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $usbname, (ConvertTo-SecureString $usbpw -AsPlainText -Force)
     #catch bad password
-    $sess = New-SFTPSession -computername $hostname -credential $cred -AcceptKey
-    $cam = Get-SFTPChildItem -sessionid $sess.SessionId -path '/mnt/cam'
+    #$sess = New-SFTPSession -computername $hostname -credential $cred -AcceptKey
+    #$cam = Get-SFTPChildItem -sessionid $sess.SessionId -path '/mnt/cam'
 }
 
 #Only run if offline or if cam has completed sync
@@ -68,9 +68,9 @@ if(!$online -or $cam.count -eq 2)
         #0.1.10
         #Force output back to folder instead of new default: Videos\Tesla_Dashcam (Windows)
         $output = $foldername + '\' + $fold + '.mp4'
-        $Script:dest = $path + '\' + $outputFolder + '\' + $fold + '.mp4'
+        $Script:dest = $outputFolder + '\' + $fold + '.mp4'
         Try {
-            $result = tesla_dashcam --quality HIGH --layout DIAMOND --rear --encoding x265 --output $output $foldername --no-check_for_update --motion_only
+            $result = tesla_dashcam --quality HIGH --layout DIAMOND --rear --encoding x265 --output $output $foldername --no-check_for_update --motion_only --speedup 2
         }
         Catch {
             LogIt -message ("$_") -component "tesla_dashcam" -type 3
@@ -88,7 +88,7 @@ if(!$online -or $cam.count -eq 2)
                     While (Test-Path $Script:dest) 
                     {
                         $i += 1
-                        $Script:dest = $path + '\' + $outputFolder + '\' + $fold + ' (' + $i + ').mp4'
+                        $Script:dest = $outputFolder + '\' + $fold + ' (' + $i + ').mp4'
                     }
                 }
                 Move-Item -Path "$output" -Destination "$Script:dest"

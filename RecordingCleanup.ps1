@@ -20,7 +20,7 @@ if($oldfiles)
     {
         Try{
             Remove-Item -Force $oldfile
-            LogIt -message ("Deleting  $oldfile") -component 'Remove-Item' -Type 1
+            #LogIt -message ("Deleting  $oldfile") -component 'Remove-Item' -Type 1
         }
         Catch
         {

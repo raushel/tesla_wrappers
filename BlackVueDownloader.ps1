@@ -171,7 +171,7 @@ while ($Choice -eq '')
                 Write-Output ''
                 "The address you chose >> [{0}] - {1} << is offline." -f $Choice, $Results[$Choice].IP
                 '    Returning to the menu.'
-                LogIt -message ("The address you chose >> [{0}] - {1} << is offline." -f $Choice, $Results[$Choice].IP) -component "Cam_Choice()" -type 3 
+                LogIt -message ("The address you chose >> [{0}] - {1} << is offline." -f $Choice, $Results[$Choice].IP) -component "Cam_Choice()" -type 2 
 
                 #pause
                 EXIT
