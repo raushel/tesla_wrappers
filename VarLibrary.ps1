@@ -33,8 +33,18 @@ $Global:usbpw = $null
 #Cleanup Variables
 $Global:retDays = 60 #number of days of files to keep
 
+#File Logging
+$Global:file_log_enabled = $true #set to $false to disable all file logging
+$Global:VerboseLogging = $true #set to $false to only log verbose entries, ignored if file_log_enabled is $false
+$Global:MaxLogSizeInKB = 5120
+
 #Pushover
 #Use $false or $true
 $Global:pushover_enabled=$false
 $Global:pushover_user_key="your user key"
 $Global:pushover_app_key="your app key"
+
+#IFTTT
+$Global:ifttt_enabled=$false
+$Global:ifttt_event="tesla_wrappers"
+$Global:ifttt_key="your ifttt key"
