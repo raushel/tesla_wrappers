@@ -36,7 +36,8 @@ if($online -and $usbpw)
 if(!$online -or $cam.count -eq 2)
 {
     LogIt -message ("$hostname is offline/synced, starting run") -component "Test-Connection" -type 1 
-    $dir = get-childitem -path $path -Recurse -Directory -Force -ErrorAction SilentlyContinue  | Where-Object {$_.Name -ne $outputFolder} | Select-Object Name,FullName
+    $dir = @(get-childitem -path $SentryClips -Recurse -Directory -Force -ErrorAction SilentlyContinue  | Where-Object {$_.Name -ne $outputFolder} | Select-Object Name,FullName)
+    $dir += @(get-childitem -path $SavedClips -Recurse -Directory -Force -ErrorAction SilentlyContinue  | Where-Object {$_.Name -ne $outputFolder} | Select-Object Name,FullName)
     $dirs = $dir | Measure-Object
     $count = ($dirs).count
 
@@ -70,7 +71,7 @@ if(!$online -or $cam.count -eq 2)
         $output = $foldername + '\' + $fold + '.mp4'
         $Script:dest = $outputFolder + '\' + $fold + '.mp4'
         Try {
-            $result = tesla_dashcam --quality HIGH --layout DIAMOND --rear --encoding x265 --output $output $foldername --no-check_for_update --motion_only --speedup 2
+            $result = tesla_dashcam --quality $Global:quality --layout $Global:layout --rear --encoding $Global:encoding --no-check_for_update --motion_only --speedup $Global:speedup --output $output $foldername
         }
         Catch {
             LogIt -message ("$_") -component "tesla_dashcam" -type 3
