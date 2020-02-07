@@ -1,15 +1,9 @@
 #Logging
-
-$VerboseLogging = "true"
-[bool]$Global:Verbose = [System.Convert]::ToBoolean($VerboseLogging)
-$Global:MaxLogSizeInKB = 5120
 $Global:ScriptStatus = 'Success'
 
 #Var to populate in script
 $Global:LogFile = $PSScriptRoot.ToString() + '\' + ($MyInvocation.MyCommand.Name).Replace('.ps1','.log')
 $Global:ScriptName = $MyInvocation.MyCommand.ToString()
-
-$uri = "https://api.pushover.net/1/messages.json"
 
 function LogIt
 {
@@ -29,13 +23,13 @@ function LogIt
     4 { $type = "Verbose" }
   }
 
-  if (($type -eq "Verbose") -and ($Global:Verbose))
+  if (($type -eq "Verbose") -and ($Global:Verbose) -and ($Global:file_log_enabled))
   {
     $toLog = "{0} `$$<{1}><{2} {3}><thread={4}>" -f ($type + ":" + $message), ($Global:ScriptName + ":" + $component), (Get-Date -Format "MM-dd-yyyy"), (Get-Date -Format "HH:mm:ss.ffffff"), $pid
     $toLog | Out-File -Append -Encoding UTF8 -FilePath ("filesystem::{0}" -f $Global:LogFile)
     Write-Host $message
   }
-  elseif ($type -ne "Verbose")
+  elseif ($type -ne "Verbose" -and ($Global:file_log_enabled))
   {
     $toLog = "{0} `$$<{1}><{2} {3}><thread={4}>" -f ($type + ":" + $message), ($Global:ScriptName + ":" + $component), (Get-Date -Format "MM-dd-yyyy"), (Get-Date -Format "HH:mm:ss.ffffff"), $pid
     $toLog | Out-File -Append -Encoding UTF8 -FilePath ("filesystem::{0}" -f $Global:LogFile)
@@ -53,7 +47,21 @@ function LogIt
         user = $Global:pushover_user_key
         message = "$component : $message"
       }
+      $uri = "https://api.pushover.net/1/messages.json"
+
       $parameters | Invoke-RestMethod -Uri $uri -Method Post
+    }
+
+    if($Global:ifttt_enabled)
+    {
+        $body = @{
+          value1 = $component
+          value2 = $message
+        }
+      
+      $ifttt_uri = "https://maker.ifttt.com/trigger/{0}/with/key/{1}" -f $Global:ifttt_event, $Global:ifttt_key
+
+      Invoke-RestMethod -Method Get -Uri $ifttt_uri -Body $body
     }
   }
 
