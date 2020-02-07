@@ -3,7 +3,7 @@ Wrappers for various TeslaCam / Blackvue Automations using Windows, PowerShell, 
 
 Use:
 - All of the .ps1 files are meant to be run either manually or via scheduled task (created by the related .XML files when imported into Task Scheduler)
-- All scripts run headless, but logging output is available in the console or via .log File
+- All scripts run headless, but logging output is available in the console or via .log File (this can be disabled via VarLibary.ps1)
 
 Dependencies / Modified Sources
 - Windows CIFS Network Share
@@ -13,7 +13,7 @@ CMTrace Logging:
 - https://github.com/raushel/tesla_wrappers/blob/master/CMTraceLogger.ps1
 - Adapted From: https://janikvonrotz.ch/2017/10/26/powershell-logging-in-cmtrace-format/
 - CMTrace Download: https://docs.microsoft.com/en-us/sccm/core/support/cmtrace
-- Errors Sent via Pushover: https://pushover.net/
+- Errors Sent via Pushover or IFTTT: https://pushover.net/ / https://ifttt.com/
 - ![Pushover](https://github.com/raushel/tesla_wrappers/blob/master/Images/Pushover.png)
 
 Windows Task Scheduler (Assign Account & Run Whether Account is logged in or not):
