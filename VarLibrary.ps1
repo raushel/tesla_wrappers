@@ -29,6 +29,11 @@ $Global:path = 'c:\PathToTeslaCam'
 $Global:outputFolder = 'OutputFolder'
 $Global:usbname = 'pi'
 $Global:usbpw = $null
+#Additional commandline modification available on line 73: StichTeslaCam.ps1
+$Global:quality = 'HIGH'
+$Global:layout = 'DIAMOND'
+$Global:encoding = 'x265'
+$Global:speedup = '2'
 
 #Cleanup Variables
 $Global:retDays = 60 #number of days of files to keep
