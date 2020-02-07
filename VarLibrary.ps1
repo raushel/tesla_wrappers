@@ -25,7 +25,8 @@ $script:IP_5_Path = "CAR5-FOLDER"
 #Tesla_DashCam Variables
 $Global:hostname = 'teslausb' #PiZero Hostname
 #No Trailing \ in Path
-$Global:path = 'c:\PathToTeslaCam'
+$Global:SentryClips = '\\teslausbshare\SentryClips'
+$Global:SavedClips = '\\teslausbshare\SavedClips'
 $Global:outputFolder = 'OutputFolder'
 $Global:usbname = 'pi'
 $Global:usbpw = $null
