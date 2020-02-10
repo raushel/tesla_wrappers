@@ -27,7 +27,7 @@ $Global:hostname = 'teslausb' #PiZero Hostname
 #No Trailing \ in Path
 $Global:SentryClips = '\\teslausbshare\SentryClips'
 $Global:SavedClips = '\\teslausbshare\SavedClips'
-$Global:outputFolder = 'OutputFolder'
+$Global:outputFolder = '\\teslausbshare\Stitched'
 $Global:usbname = 'pi'
 $Global:usbpw = $null
 #Additional commandline modification available on line 73: StichTeslaCam.ps1
