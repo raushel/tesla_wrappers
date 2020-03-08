@@ -10,7 +10,7 @@ $Global:ScriptName = $MyInvocation.MyCommand.ToString()
 $Script:FileCount = 0
 $Script:Dest = $NULL
 
-C:\Python37\python.exe -m pip install --upgrade pip
+python.exe -m pip install --upgrade pip
 #pip install ffmpeg --upgrade
 pip install tesla_dashcam==0.1.16
 #pip install python-dateutil --upgrade
