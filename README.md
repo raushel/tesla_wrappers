@@ -1,12 +1,13 @@
 # tesla_wrappers
-Wrappers for various TeslaCam / Blackvue Automations using Windows, PowerShell, and Python
+Wrappers for various TeslaCam / Blackvue Automations using Windows/OSX, PowerShell, and Python
 
 Use:
 - All of the .ps1 files are meant to be run either manually or via scheduled task (created by the related .XML files when imported into Task Scheduler)
 - All scripts run headless, but logging output is available in the console or via .log File (this can be disabled via VarLibary.ps1)
+- Will run on Windows / OSX / Linux? with PowerShell installed
 
 Dependencies / Modified Sources
-- Windows CIFS Network Share
+- CIFS Network Share
 - Local DNS registration for BlackVue / Teslausb
 
 CMTrace Logging:
@@ -15,6 +16,7 @@ CMTrace Logging:
 - CMTrace Download: https://docs.microsoft.com/en-us/sccm/core/support/cmtrace
 - Errors Sent via Pushover or IFTTT: https://pushover.net/ / https://ifttt.com/
 - ![Pushover](https://github.com/raushel/tesla_wrappers/blob/master/Images/Pushover.png)
+- ![IFTTT](https://github.com/raushel/tesla_wrappers/blob/master/Images/IFTTT.png)
 
 Windows Task Scheduler (Assign Account & Run Whether Account is logged in or not):
 - https://github.com/raushel/tesla_wrappers/blob/master/StitchTeslaCam.xml
@@ -34,8 +36,10 @@ Recording Cleanup:
 Stitch Sentry Mode / Saved footage together:
 - Wrapper: https://github.com/raushel/tesla_wrappers/blob/master/StitchTeslaCam.ps1
 - Tesla_DashCam Repository: https://github.com/ehendrix23/tesla_dashcam
-- Python37 Dependency: https://www.python.org/downloads/release/python-370/
+- Python3.x Dependency: https://www.python.org/downloads/
 - PIP for Windows: https://www.liquidweb.com/kb/install-pip-windows/
+- PIP for OSX: https://ahmadawais.com/install-pip-macos-os-x-python/
+- PowerShell for OSX: https://wilsonmar.github.io/powershell-on-mac/
 - ![CMTrace Log](https://github.com/raushel/tesla_wrappers/blob/master/Images/StitchTeslaCam.png)
 
 BlackVue Downloader:
