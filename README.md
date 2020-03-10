@@ -16,6 +16,8 @@ CMTrace Logging:
 - CMTrace Download: https://docs.microsoft.com/en-us/sccm/core/support/cmtrace
 - Errors Sent via Pushover or IFTTT: https://pushover.net/ / https://ifttt.com/
 - ![Pushover](https://github.com/raushel/tesla_wrappers/blob/master/Images/Pushover.png)
+
+IFTTT Applet:
 - ![IFTTT](https://github.com/raushel/tesla_wrappers/blob/master/Images/IFTTT.png)
 
 Windows Task Scheduler (Assign Account & Run Whether Account is logged in or not):
