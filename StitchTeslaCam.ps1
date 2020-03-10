@@ -3,33 +3,42 @@ $ErrorActionPreference = "Stop"
 . $PSScriptRoot\CMTraceLogger.ps1
 . $PSScriptRoot\VarLibrary.ps1
 
+#Check if Windows or Not, change direction of slash for path operations
+if($env:OS -eq 'Windows_NT')
+{
+    $slash = '\'
+}
+else 
+{
+    $slash = '/'
+}
+
 #Var
-$Global:LogFile = $PSScriptRoot.ToString() + '\' + ($MyInvocation.MyCommand.Name).Replace('.ps1','.log')
+$Global:LogFile = $PSScriptRoot.ToString() + $slash + ($MyInvocation.MyCommand.Name).Replace('.ps1','.log')
 $Global:ScriptName = $MyInvocation.MyCommand.ToString()
 
 $Script:FileCount = 0
 $Script:Dest = $NULL
 
-python.exe -m pip install --upgrade pip
-#pip install ffmpeg --upgrade
+python -m pip install --upgrade pip
 pip install tesla_dashcam==0.1.16
-#pip install python-dateutil --upgrade
 
-#pip install tesla_dashcam --upgrade
-
-#Only needed on first run
+#Only needed on first run (run as Administrator), Windows Only
 #Install-PackageProvider NuGet -Force
 #Install-Module posh-ssh -force
 
 $online = Test-Connection $hostname -quiet
 
-#Check if sync is already complete
-if($online -and $usbpw)
+#Check if sync is already complete for latest snapshot
+if($online -and $usbpw -and $env:OS -eq 'Windows_NT')
 {
-    #$cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $usbname, (ConvertTo-SecureString $usbpw -AsPlainText -Force)
-    #catch bad password
-    #$sess = New-SFTPSession -computername $hostname -credential $cred -AcceptKey
-    #$cam = Get-SFTPChildItem -sessionid $sess.SessionId -path '/mnt/cam'
+    Import-Module 'C:\Program Files\WindowsPowerShell\Modules\Posh-SSH\2.2\PoshSSH.dll'
+
+    $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $usbname, (ConvertTo-SecureString $usbpw -AsPlainText -Force)
+    #Reset Trusted Host
+    Get-SSHTrustedHost | Remove-SSHTrustedHost
+    $sess = New-SFTPSession -computername $hostname -credential $cred -AcceptKey
+    $cam = Get-SFTPChildItem -sessionid $sess.SessionId -path '/mnt/cam'
 }
 
 #Only run if offline or if cam has completed sync
@@ -41,8 +50,14 @@ if(!$online -or $cam.count -eq 2)
     $dirs = $dir | Measure-Object
     $count = ($dirs).count
 
-    if($count -gt 0) {$type = 3}
-    else {$type = 2}
+    if($count -gt 0) 
+    {
+        $type = 3
+    }
+    else 
+    {
+        $type = 2
+    }
     LogIt -message ("Folders to Process: $count") -component "Test-Connection" -type $type 
     
     $i = 1
@@ -68,8 +83,8 @@ if(!$online -or $cam.count -eq 2)
 
         #0.1.10
         #Force output back to folder instead of new default: Videos\Tesla_Dashcam (Windows)
-        $output = $foldername + '\' + $fold + '.mp4'
-        $Script:dest = $outputFolder + '\' + $fold + '.mp4'
+        $output = $foldername + $slash + $fold + '.mp4'
+        $Script:dest = $outputFolder + $slash + $fold + '.mp4'
         Try {
             $result = tesla_dashcam --quality $Global:quality --layout $Global:layout --rear --encoding $Global:encoding --no-check_for_update --motion_only --speedup $Global:speedup --output $output $foldername
         }
@@ -89,7 +104,7 @@ if(!$online -or $cam.count -eq 2)
                     While (Test-Path $Script:dest) 
                     {
                         $i += 1
-                        $Script:dest = $outputFolder + '\' + $fold + ' (' + $i + ').mp4'
+                        $Script:dest = $outputFolder + $slash + $fold + ' (' + $i + ').mp4'
                     }
                 }
                 Move-Item -Path "$output" -Destination "$Script:dest"

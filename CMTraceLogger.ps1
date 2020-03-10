@@ -48,7 +48,7 @@ function LogIt
         message = "$component : $message"
       }
       $uri = "https://api.pushover.net/1/messages.json"
-
+      
       $parameters | Invoke-RestMethod -Uri $uri -Method Post
     }
 
