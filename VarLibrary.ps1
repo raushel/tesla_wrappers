@@ -27,14 +27,19 @@ $Global:hostname = 'teslausb' #PiZero Hostname
 #No Trailing \ in Path
 $Global:SentryClips = '\\teslausbshare\SentryClips'
 $Global:SavedClips = '\\teslausbshare\SavedClips'
+$Global:TeslaTrackModeClips = '\\teslausbshare\TeslaTrackMode'
 $Global:outputFolder = '\\teslausbshare\Stitched'
-$Global:usbname = 'pi'
-$Global:usbpw = $null
+#$Global:usbname = 'pi' #No Longer Used, trigger files required
+#$Global:usbpw = $null #No Longer Used, trigger files required
 #Additional commandline modification available on line 73: StichTeslaCam.ps1
 $Global:quality = 'HIGH'
 $Global:layout = 'DIAMOND'
 $Global:encoding = 'x265'
 $Global:speedup = '2'
+#Trigger Files
+$Global:trigger_file_saved='ARCHIVE_UPLOADED.txt'
+$Global:trigger_file_sentry='ARCHIVE_UPLOADED.txt'
+#$Global:trigger_file_track='ARCHIVE_UPLOADED.txt' #Placeholder for once it's added
 
 #Cleanup Variables
 $Global:retDays = 60 #number of days of files to keep
