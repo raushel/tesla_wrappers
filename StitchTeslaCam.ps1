@@ -27,9 +27,9 @@ pip install tesla_dashcam==0.1.16
 #Install-PackageProvider NuGet -Force
 #Install-Module posh-ssh -force
 
-$online = Test-Connection $hostname -quiet
+#$online = Test-Connection $hostname -quiet
 
-#Check if sync is already complete for latest snapshot
+<#Check if sync is already complete for latest snapshot
 if($online -and $usbpw -and $env:OS -eq 'Windows_NT')
 {
     Import-Module 'C:\Program Files\WindowsPowerShell\Modules\Posh-SSH\2.2\PoshSSH.dll'
@@ -39,14 +39,36 @@ if($online -and $usbpw -and $env:OS -eq 'Windows_NT')
     Get-SSHTrustedHost | Remove-SSHTrustedHost
     $sess = New-SFTPSession -computername $hostname -credential $cred -AcceptKey
     $cam = Get-SFTPChildItem -sessionid $sess.SessionId -path '/mnt/cam'
-}
+}#>
 
 #Only run if offline or if cam has completed sync
-if(!$online -or $cam.count -eq 2)
+#if(!$online -or $cam.count -eq 2)
+
+#Test for Trigger Files and processes only when exists
+$path = $null
+
+if(Test-Path "$SentryClips\$trigger_file_saved")
 {
-    LogIt -message ("$hostname is offline/synced, starting run") -component "Test-Connection" -type 1 
-    $dir = @(get-childitem -path $SentryClips -Recurse -Directory -Force -ErrorAction SilentlyContinue  | Where-Object {$_.Name -ne $outputFolder} | Select-Object Name,FullName)
-    $dir += @(get-childitem -path $SavedClips -Recurse -Directory -Force -ErrorAction SilentlyContinue  | Where-Object {$_.Name -ne $outputFolder} | Select-Object Name,FullName)
+    $path = @($SentryClips)
+}
+if(Test-Path "$savedClips\$trigger_file_sentry")
+{ 
+    if($path) {$path += @($savedClips)}
+    else {$path = @($savedClips)}
+}
+#if(Test-Path "$TeslaTrackModeClips\$trigger_file_track")
+#{ 
+    if($path) {$path += @($TeslaTrackModeClips)}
+    else {$path = @($TeslaTrackModeClips)}
+#}
+
+if($path)
+{
+    #LogIt -message ("$hostname is offline/synced, starting run") -component "Test-Connection" -type 1
+    LogIt -message ("Starting run for $path") -component "Test-Connection" -type 1
+
+    $dir = @(get-childitem -path $path -Recurse -Directory -Force -ErrorAction SilentlyContinue  | Where-Object {$_.Name -ne $outputFolder} | Select-Object Name,FullName)
+    #$dir += @(get-childitem -path $SavedClips -Recurse -Directory -Force -ErrorAction SilentlyContinue  | Where-Object {$_.Name -ne $outputFolder} | Select-Object Name,FullName)
     $dirs = $dir | Measure-Object
     $count = ($dirs).count
 
@@ -80,11 +102,29 @@ if(!$online -or $cam.count -eq 2)
             }
             Continue
         }
+        else {
+           $event = Get-Content -raw -path "$foldername\event.json" | ConvertFrom-Json
+        }
+
+        $city = $event.city
+        $reason = $event.reason
 
         #0.1.10
         #Force output back to folder instead of new default: Videos\Tesla_Dashcam (Windows)
-        $output = $foldername + $slash + $fold + '.mp4'
-        $Script:dest = $outputFolder + $slash + $fold + '.mp4'
+        $name = "$slash$fold - $city - $reason.mp4"
+        $output = $foldername + $name
+        $Script:dest = $outputFolder + $name
+
+        #Deal with potenial long file paths
+        if($output.length -gt 257)
+        {
+            $output = $output.substring(0,253) + '.mp4'
+        }
+        if($dest.length -gt 257)
+        {
+            $dest = $dest.substring(0,253) + '.mp4'
+        }
+
         Try {
             $result = tesla_dashcam --quality $Global:quality --layout $Global:layout --rear --encoding $Global:encoding --no-check_for_update --motion_only --speedup $Global:speedup --output $output $foldername
         }
