@@ -113,7 +113,7 @@ $Results = foreach ($IP in $IPList)
         IF ($IP -EQ $CAR3.IP) {$CAR_FRIENDLY = $CAR3.CARNAME}
         IF ($IP -EQ $CAR4.IP) {$CAR_FRIENDLY = $CAR4.CARNAME}
         IF ($IP -EQ $CAR5.IP) {$CAR_FRIENDLY = $CAR5.CARNAME}
-    write-host "Testing for Camera connection on $IP ..." -ForegroundColor Yellow
+    #write-host "Testing for Camera connection on $IP ..." -ForegroundColor Yellow
     LogIt -message ("Testing for Camera connection on $IP ...") -component "Cam_Choice()" -type 2 
 
     $Response = Test-Connection -ComputerName $IP -Count 1 -Quiet
@@ -141,12 +141,12 @@ while ($Choice -eq '')
         $ValidChoices += $Index
         }
     ''
-    $Choice = '0'
+    $Choice = 'A'
     #$Choice = (Read-Host 'Please choose a [number], [A] for All Online, or [X] to exit.').ToUpper()
     if ($Choice -notin $ValidChoices)
         {
         #[console]::Beep(1000, 300)
-        Write-Output "    >> $Choice << is not a valid selection, please try again."
+        #Write-Output "    >> $Choice << is not a valid selection, please try again."
         LogIt -message (">>$Choice << is not a valid selection, please try again.") -component "Cam_Choice()" -type 3 
 
         #start-sleep -s 5
@@ -168,9 +168,9 @@ while ($Choice -eq '')
                 }
                 else
                 {
-                Write-Output ''
-                "The address you chose >> [{0}] - {1} << is offline." -f $Choice, $Results[$Choice].IP
-                '    Returning to the menu.'
+                #Write-Output ''
+                #"The address you chose >> [{0}] - {1} << is offline." -f $Choice, $Results[$Choice].IP
+                #'    Returning to the menu.'
                 LogIt -message ("The address you chose >> [{0}] - {1} << is offline." -f $Choice, $Results[$Choice].IP) -component "Cam_Choice()" -type 2 
 
                 #pause
@@ -187,9 +187,9 @@ while ($Choice -eq '')
             $SCRIPT:CARTARGET = $CAR1,$CAR2,$CAR3,$CAR4,$CAR5
             $Host.UI.WriteWarningLine("THIS FEATURE HAS NOT BEEN IMPLEMENTED YET")
             #DOWNLOAD-ALL
-            EXIT
-            $Choice = '' 
-            break
+            #EXIT
+            #$Choice = '' 
+            #break
             }
         'X'
             {break}
@@ -230,7 +230,7 @@ IF ($IP_TARGET -EQ $CAR5.IP) {$SCRIPT:CARTARGET = $CAR5}
 $SCRIPT:CARPATH = $CARTARGET.CARPATH
 $SCRIPT:DC_IP = $CARTARGET.IP
 write-output "`n"
-write-output "RETREIVING FILE LIST FROM CAMERA"
+#write-output "RETREIVING FILE LIST FROM CAMERA"
 LogIt -message ("Retreiving File List From Camera") -component "Process_Files()" -type 1
 (New-Object System.Net.WebClient).DownloadString("http://{0}/blackvue_vod.cgi" -f $CARTARGET.IP) >$DCROOT_FOLDER\$CARPATH\file.list
 write-output "`n"
@@ -348,11 +348,6 @@ $FILE_LIST_ALL = $FILE_LIST_ALL_TMP|
     Sort-Object |
     Get-Unique
 
-
-
-
-
-
 write-output "`n"
 write-output "`n"
 write-output "`n"
@@ -377,11 +372,6 @@ write-output "NUMBER OF MANUAL RECORDINGS IS $MANUAL_COUNT WITH $MANUAL_COUNT_NE
 LogIt -message ("Manual: $MANUAL_COUNT | New: $MANUAL_COUNT_NEW") -component "Process_Files()" -type $type
 write-output "`n"
 write-output " ------------------------------------------------------------------------------------------------------- "
-
-
-
-
-
 
 $Choice = ''
 while ($Choice -eq '')
@@ -417,8 +407,8 @@ while ($Choice -eq '')
             {
             $SCRIPT:FILE_COUNT = ($VID_COUNT_NEW*2)
             DOWNLOAD_VIDS ALL
-            $Choice = '' 
-            break
+            $Choice = 'A' 
+            RETURN
             }
         'X'
             {exit}
@@ -428,37 +418,32 @@ while ($Choice -eq '')
             {
             $SCRIPT:FILE_COUNT = ($EVENT_COUNT_NEW*2)
             DOWNLOAD_VIDS EVENT
-            $Choice = '' 
+            $Choice = 'E' 
             break
             }
         'P'
             {
             $SCRIPT:FILE_COUNT = ($PARK_COUNT_NEW*2)
             DOWNLOAD_VIDS PARKING
-            $Choice = '' 
+            $Choice = 'P' 
             break
             }
         'M'
             {
             $SCRIPT:FILE_COUNT = ($MANUAL_COUNT_NEW*2)
             DOWNLOAD_VIDS MANUAL
-            $Choice = '' 
+            $Choice = 'M' 
             break
             }
         'N'
             {
             $SCRIPT:FILE_COUNT = ($NORMAL_COUNT_NEW*2)
             DOWNLOAD_VIDS NORMAL
-            $Choice = '' 
+            $Choice = 'N' 
             break
             }
-
         }
-
-
     }
-
-
 }
 
 
@@ -470,8 +455,8 @@ Param(
     $SELECTION
 )
 
-write-output "Downloading Video and Data Files... Please Wait (Press Ctrl + C to abort at any time)"
-LogIt -message (Downloading Video and Data Files...) -component "Download_Vids()" -type 2
+#write-output "Downloading Video and Data Files... Please Wait (Press Ctrl + C to abort at any time)"
+LogIt -message ("Downloading Video and Data Files...") -component "Download_Vids()" -type 2
 
  
 $PROCESSTIME = Get-Date
@@ -507,7 +492,7 @@ $FILENUM_PROGRESS = ($FILENUM_PROGRESS+1)
 
 $Progress = [math]::Round((($FILENUM_PROGRESS / $VID_COUNT) * 100),2)
 Write-Output -ID 1 -ACTIVITY "DOWNLOADING VIDEO FILES: $Progress%"
-LogIt -message ("Downloading Video Files: $Progress%") -component "Download_Vids()" -type 1
+LogIt -message ("Downloading Video Files to $CARPATH : $Progress%") -component "Download_Vids()" -type 1
 
 Write-Output -ID ($ACTIVITY_ID+1) -Activity "Getting video $FILENUM_PROGRESS of $VID_COUNT"  -CurrentOperation "Retreiving video files from camera: 0%"
 LogIt -message ("Getting video $FILENUM_PROGRESS of $VID_COUNT") -component "Download_Vids()" -type 1 
@@ -600,7 +585,7 @@ LogIt -message ("DOWNLOADING VIDEO FILES COMPLETED") -component "Download_Vids()
 write-output "`n"
 write-output "`n"
 
-write-output "All files have been downloaded from the camera."
+#write-output "All files have been downloaded from the camera."
 LogIt -message ("All files have been downloaded from the camera.") -component "Download_Vids()" -type $type 
 write-output "`n"
 
@@ -609,7 +594,7 @@ write-output " -----------------------------------------------------------------
 write-output " ------------------------------------------------------------------------------------------------------- "
 write-output "`n"
 write-output "`n"
-EXIT
+RETURN
 
 
 
